@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{# ------------------------------------------------------
+TÍTULO DE LA PESTAÑA
+------------------------------------------------------ #}
+{% block title %}Nuevo Vehículo | MedinAutos{% endblock %}
+
+{# ------------------------------------------------------
+CSS DEL MÓDULO
+------------------------------------------------------ #}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/vehiculos.css">
+{% endblock %}
+
+{% block content %}
+
+<!-- ==================================================
+     CABECERA
+================================================== -->
+<div class="vehiculos-header">
+    <h1>Registrar nuevo vehículo</h1>
+    <p class="subtitle">
+        Asocia el vehículo a un cliente existente
+    </p>
+</div>
+
+<!-- ==================================================
+     TARJETA CONTENEDORA
+================================================== -->
+<div class="vehiculos-card">
+
+    <!-- FORMULARIO -->
+    <form method="post" class="vehiculos-form">
+
+        <!-- =========================
+             CLIENTE (OBLIGATORIO)
+        ========================== -->
+        <div class="form-group">
+            <label for="cliente_id">
+                <i class="fa-solid fa-user"></i> Cliente *
+            </label>
+
+            <div class="select-wrapper">
+                <select name="cliente_id" id="cliente_id" required>
+                    <option value="" disabled selected>
+                        Seleccione un cliente
+                    </option>
+
+                    {% for cliente in clientes %}
+                    <option value="{{ cliente.id }}">
+                        {{ cliente.nombre }} — {{ cliente.documento }}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <!-- Icono del select -->
+                <span class="select-icon">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </span>
+            </div>
+        </div>
+
+        <!-- =========================
+             PLACA
+        ========================== -->
+        <div class="form-group">
+            <label>
+                <i class="fa-solid fa-car"></i> Placa *
+            </label>
+            <input type="text" name="placa" required placeholder="ABC123" style="text-transform: uppercase;">
+        </div>
+
+        <!-- =========================
+             MARCA
+        ========================== -->
+        <div class="form-group">
+            <label>
+                <i class="fa-solid fa-industry"></i> Marca *
+            </label>
+            <input type="text" name="marca" required placeholder="Renault">
+        </div>
+
+        <!-- =========================
+             MODELO
+        ========================== -->
+        <div class="form-group">
+            <label>
+                <i class="fa-solid fa-tag"></i> Modelo *
+            </label>
+            <input type="text" name="modelo" required placeholder="Clio">
+        </div>
+
+        <!-- =========================
+             AÑO
+        ========================== -->
+        <div class="form-group">
+            <label>
+                <i class="fa-solid fa-calendar"></i> Año
+            </label>
+            <input type="number" name="anio" min="1900" max="2100" placeholder="2025">
+        </div>
+
+        <!-- =========================
+             COLOR
+        ========================== -->
+        <div class="form-group">
+            <label>
+                <i class="fa-solid fa-palette"></i> Color
+            </label>
+            <input type="text" name="color" placeholder="Rojo">
+        </div>
+
+        <!-- =========================
+             ACCIONES
+        ========================== -->
+        <div class="form-actions">
+            <a href="/vehiculos" class="btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Cancelar
+            </a>
+
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Guardar vehículo
+            </button>
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
+
+{# ------------------------------------------------------
+SWEETALERT DE ÉXITO (CREATE)
+------------------------------------------------------ #}
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    /* ==========================================
+       ALERTA DE ÉXITO AL CREAR VEHÍCULO
+    ========================================== */
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has("created")) {
+        Swal.fire({
+            icon: "success",
+            title: "Vehículo registrado",
+            text: "El vehículo fue creado correctamente",
+            confirmButtonColor: "#d81822"
+        });
+    }
+</script>
+
+{% endblock %}

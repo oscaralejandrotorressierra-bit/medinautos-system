@@ -1,0 +1,487 @@
+/* =====================================================
+   VARIABLES GLOBALES DE COLOR
+   Paleta oficial MedinAutos
+===================================================== */
+:root {
+    --rojo: #d81822;
+    --gris-oscuro: #302e2f;
+    --gris-claro: #f0eaea;
+    --blanco: #ffffff;
+}
+
+/* =====================================================
+   RESET GENERAL
+   Evita inconsistencias entre navegadores
+===================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   FUENTE GENERAL
+   (NO rompe Font Awesome)
+===================================================== */
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--gris-claro);
+    color: var(--gris-oscuro);
+}
+
+/* =====================================================
+   FORZAR FONT AWESOME
+   SOLUCIÓN CLAVE PARA ICONOS
+===================================================== */
+.fa,
+.fas,
+.far,
+.fab,
+.fa-solid {
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900;
+}
+
+/* =====================================================
+   HEADER PRINCIPAL
+===================================================== */
+.main-header {
+    background-color: var(--gris-oscuro);
+    color: var(--blanco);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo */
+.main-header .logo a {
+    color: var(--blanco);
+    font-size: 22px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Navegación */
+.main-nav a {
+    color: var(--blanco);
+    margin-left: 25px;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.main-nav a:hover {
+    color: var(--rojo);
+}
+
+/* =====================================================
+   CONTENEDOR GENERAL
+===================================================== */
+.container {
+    padding: 40px;
+}
+
+/* =====================================================
+   BOTONES
+===================================================== */
+.btn-primary {
+    background-color: var(--rojo);
+    color: var(--blanco);
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary:hover {
+    background-color: #b8141c;
+}
+
+/* =====================================================
+   PAGE (CONTENEDOR CENTRAL)
+===================================================== */
+.page {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* =====================================================
+   HEADER DE CLIENTES
+===================================================== */
+.clientes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.clientes-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2e2e2e;
+}
+
+/* =====================================================
+   CARD CLIENTES
+===================================================== */
+.clientes-card {
+    background: var(--blanco);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.08);
+}
+
+/* =====================================================
+   TABLA
+===================================================== */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+/* Cabecera */
+.table thead {
+    background-color: #2b2b2b;
+}
+
+.table thead th {
+    color: var(--blanco);
+    font-weight: 600;
+    padding: 14px 16px;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* Filas */
+.table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5e5e5;
+    color: #333;
+    vertical-align: middle;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(216, 24, 34, 0.04);
+}
+
+/* Columna acciones */
+.table th:last-child,
+.table td:last-child {
+    text-align: center;
+    width: 130px;
+}
+
+/* =====================================================
+   ACCIONES (ICONOS)
+===================================================== */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Botón base */
+.action-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+/* Iconos visibles siempre */
+.action-btn i {
+    font-size: 15px;
+    line-height: 1;
+}
+
+/* EDITAR */
+.action-btn.edit {
+    background-color: #e8f0ff;
+}
+
+.action-btn.edit i {
+    color: #2563eb;
+}
+
+.action-btn.edit:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.action-btn.edit:hover i {
+    color: var(--blanco);
+}
+
+/* ELIMINAR */
+.action-btn.delete {
+    background-color: #fdecec;
+}
+
+.action-btn.delete i {
+    color: #dc2626;
+}
+
+.action-btn.delete:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+}
+
+.action-btn.delete:hover i {
+    color: var(--blanco);
+}
+
+/* =====================================================
+   ESTADO VACÍO
+===================================================== */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #777;
+}
+
+.empty-state h3 {
+    margin-bottom: 6px;
+    font-size: 18px;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+.main-footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* =====================================================
+   FORMULARIO CLIENTE
+===================================================== */
+.page {
+    max-width: 900px;
+}
+
+.card {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Grid del formulario */
+.form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Labels */
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #666;
+    margin-bottom: 6px;
+}
+
+/* Inputs */
+.form-group input {
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #d0d0d0;
+    font-size: 14px;
+    background-color: #fafafa;
+    transition: all 0.25s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    background-color: var(--blanco);
+    border-color: var(--rojo);
+    box-shadow: 0 0 0 3px rgba(216, 24, 34, 0.15);
+}
+
+/* Email ocupa toda la fila */
+.form-group:nth-child(4) {
+    grid-column: span 2;
+}
+
+/* Acciones */
+.form-actions {
+    grid-column: span 2;
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+/* =====================================================
+   ALERTAS
+===================================================== */
+.alert {
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.alert-error {
+    background-color: #fdecec;
+    color: #b91c1c;
+    border: 1px solid #f5c2c7;
+}
+
+/* ===============================
+   ICONOS DE ACCIONES (PRO)
+================================ */
+
+.action-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+}
+
+/* Icono interno */
+.action-icon i {
+    font-size: 16px;
+}
+
+/* ✏️ EDITAR */
+.action-icon.edit {
+    background-color: #eef2ff;
+}
+
+.action-icon.edit i {
+    color: #2563eb;
+}
+
+.action-icon.edit:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.action-icon.edit:hover i {
+    color: #ffffff;
+}
+
+/* 🗑️ ELIMINAR */
+.action-icon.delete {
+    background-color: #fee2e2;
+}
+
+.action-icon.delete i {
+    color: #dc2626;
+}
+
+.action-icon.delete:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+}
+
+.action-icon.delete:hover i {
+    color: #ffffff;
+}
+
+/* =====================================================
+   SIDEBAR PRINCIPAL
+   Navegación lateral del sistema
+===================================================== */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 230px;
+    height: 100vh;
+    background-color: var(--gris-oscuro);
+    color: var(--blanco);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    z-index: 1000;
+}
+
+/* Logo */
+.sidebar-logo {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.sidebar-logo a {
+    color: var(--blanco);
+    text-decoration: none;
+}
+
+/* Navegación */
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-nav a {
+    padding: 14px 26px;
+    color: var(--blanco);
+    text-decoration: none;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.25s ease;
+}
+
+.sidebar-nav a i {
+    font-size: 16px;
+}
+
+/* Hover */
+.sidebar-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--rojo);
+}
+
+/* Logout destacado */
+.sidebar-nav .logout {
+    margin-top: auto;
+    background-color: rgba(216, 24, 34, 0.15);
+}
+
+.sidebar-nav .logout:hover {
+    background-color: var(--rojo);
+    color: var(--blanco);
+}
+
+/* =====================================================
+   AJUSTE DEL CONTENIDO PRINCIPAL
+===================================================== */
+
+.container {
+    margin-left: 230px;
+    padding: 40px;
+}

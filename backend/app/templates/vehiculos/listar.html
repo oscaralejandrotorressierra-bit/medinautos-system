@@ -1,0 +1,165 @@
+{# ======================================================
+LISTADO DE VEHÍCULOS - MEDINAUTOS
+
+Este template:
+- Muestra todos los vehículos registrados
+- Incluye el cliente asociado
+- Permite editar y eliminar
+- Integra SweetAlert2
+====================================================== #}
+
+{% extends "base.html" %}
+
+{# ------------------------------------------------------
+TÍTULO DE LA PESTAÑA
+------------------------------------------------------ #}
+{% block title %}Vehículos | MedinAutos{% endblock %}
+
+{# ------------------------------------------------------
+CSS ESPECÍFICO DEL MÓDULO
+------------------------------------------------------ #}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/vehiculos.css">
+{% endblock %}
+
+{% block content %}
+
+<!-- ==================================================
+     CABECERA DEL MÓDULO
+================================================== -->
+<div class="vehiculos-header">
+    <h1>Vehículos</h1>
+
+    <!-- Botón para crear un nuevo vehículo -->
+    <a href="/vehiculos/crear" class="btn-primary">
+        <i class="fa-solid fa-plus"></i> Nuevo vehículo
+    </a>
+</div>
+
+<!-- ==================================================
+     CONTENEDOR PRINCIPAL
+================================================== -->
+<div class="vehiculos-card">
+
+    <!-- ==================================================
+         TABLA DE VEHÍCULOS
+    ================================================== -->
+    <table class="vehiculos-table">
+
+        <!-- ENCABEZADOS -->
+        <thead>
+            <tr>
+                <th>Placa</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Año</th>
+                <th>Color</th>
+                <th>Cliente</th>
+                <th class="acciones">Acciones</th>
+            </tr>
+        </thead>
+
+        <!-- CUERPO -->
+        <tbody>
+
+            {% for v in vehiculos %}
+            <tr class="vehiculo-row">
+
+                <!-- Placa -->
+                <td class="placa">{{ v.placa }}</td>
+
+                <td>{{ v.marca }}</td>
+                <td>{{ v.modelo }}</td>
+                <td>{{ v.anio or "-" }}</td>
+                <td>{{ v.color or "-" }}</td>
+
+                <!-- Cliente -->
+                <td>
+                    {{ v.cliente.nombre if v.cliente else "Sin cliente" }}
+                </td>
+
+                <!-- ACCIONES -->
+                <td class="acciones">
+
+                    <!-- EDITAR -->
+                    <a href="/vehiculos/{{ v.id }}/editar" class="btn-icon btn-edit" title="Editar vehículo">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+
+                    <!-- ELIMINAR -->
+                    <form method="post" action="/vehiculos/{{ v.id }}/eliminar" class="form-delete"
+                        data-placa="{{ v.placa }}">
+
+                        <button type="submit" class="btn-icon btn-delete" title="Eliminar vehículo">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                    </form>
+
+                </td>
+            </tr>
+
+            {% else %}
+            <tr>
+                <td colspan="7" class="empty">
+                    No hay vehículos registrados
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}
+
+{# ------------------------------------------------------
+JS DEL MÓDULO
+------------------------------------------------------ #}
+{% block extra_js %}
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="/static/js/vehiculos.js"></script>
+
+<script>
+    /* ==========================================
+       SWEET ALERT DE ÉXITO (CREATE / UPDATE / DELETE)
+    ========================================== */
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has("created")) {
+        Swal.fire({
+            icon: "success",
+            title: "Vehículo registrado",
+            text: "El vehículo fue creado correctamente",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    if (params.has("updated")) {
+        Swal.fire({
+            icon: "success",
+            title: "Vehículo actualizado",
+            text: "Los cambios se guardaron correctamente",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    if (params.has("deleted")) {
+        Swal.fire({
+            icon: "success",
+            title: "Vehículo eliminado",
+            text: "El vehículo fue eliminado correctamente",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+</script>
+
+{% endblock %}

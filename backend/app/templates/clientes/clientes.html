@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Clientes | MedinAutos{% endblock %}
+
+{% block content %}
+<section class="page">
+
+    <!-- ===============================
+         ENCABEZADO DE LA PÁGINA
+         Título + botón crear cliente
+    =============================== -->
+    <div class="clientes-header">
+        <h1>Clientes</h1>
+
+        <!-- Botón que lleva al formulario de creación -->
+        <a href="/clientes/nuevo" class="btn-primary">
+            Nuevo Cliente
+        </a>
+    </div>
+
+    <!-- ===============================
+         CONTENEDOR PRINCIPAL
+    =============================== -->
+    <div class="clientes-card">
+
+        {# Si existen clientes, se muestra la tabla #}
+        {% if clientes and clientes|length > 0 %}
+        <table class="table">
+
+            <!-- CABECERA DE LA TABLA -->
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Documento</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th class="center">Acciones</th>
+                </tr>
+            </thead>
+
+            <!-- CUERPO DE LA TABLA -->
+            <tbody>
+                {% for c in clientes %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.nombre }}</td>
+                    <td>{{ c.documento }}</td>
+                    <td>{{ c.telefono or "-" }}</td>
+                    <td>{{ c.email or "-" }}</td>
+
+                    <!-- ===============================
+                         ACCIONES POR CLIENTE
+                         ✏️ Editar
+                         🗑️ Eliminar
+                    =============================== -->
+                    <td class="center">
+                        <div class="actions">
+
+                            <!-- ✏️ EDITAR CLIENTE
+                                 Redirige al formulario precargado -->
+                            <a href="/clientes/{{ c.id }}/editar" class="action-icon edit" title="Editar cliente">
+                                <i class="fa-solid fa-edit"></i>
+                            </a>
+
+                            <!-- 🗑️ ELIMINAR CLIENTE
+                                 Usa SweetAlert para confirmar -->
+                            <button type="button" class="action-icon delete btn-eliminar" data-id="{{ c.id }}"
+                                data-nombre="{{ c.nombre }}" title="Eliminar cliente">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+        <!-- ===============================
+             ESTADO VACÍO
+             Cuando no hay clientes
+        =============================== -->
+        <div class="empty-state">
+            <h3>No hay clientes registrados</h3>
+            <p>Empieza creando tu primer cliente.</p>
+
+            <a href="/clientes/nuevo" class="btn-primary">
+                Crear Cliente
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+<!-- FORMULARIO OCULTO PARA ELIMINAR (POST) -->
+<form id="form-eliminar" method="post" style="display:none;"></form>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- ===============================
+     SWEETALERT2 (LIBRERÍA)
+=============================== -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- ===============================
+     ALERTA: CLIENTE CREADO
+     Se activa con ?success=1
+=============================== -->
+{% if request.query_params.get('success') %}
+<script>
+    Swal.fire({
+        icon: "success",
+        title: "Cliente creado",
+        text: "El cliente se registró correctamente.",
+        confirmButtonColor: "#d81822"
+    });
+</script>
+{% endif %}
+
+<!-- ===============================
+     ALERTA: CLIENTE ELIMINADO
+     Se activa con ?deleted=1
+=============================== -->
+{% if request.query_params.get('deleted') %}
+<script>
+    Swal.fire({
+        icon: "success",
+        title: "Cliente eliminado",
+        text: "El cliente fue eliminado correctamente.",
+        confirmButtonColor: "#d81822"
+    });
+</script>
+{% endif %}
+
+<!-- ===============================
+     ALERTA: CLIENTE ACTUALIZADO
+     Se activa con ?updated=1
+     ✅ Limpia la URL después del OK
+=============================== -->
+{% if request.query_params.get('updated') %}
+<script>
+    Swal.fire({
+        icon: "success",
+        title: "Cliente actualizado",
+        text: "Los datos del cliente se actualizaron correctamente.",
+        confirmButtonColor: "#d81822"
+    }).then(() => {
+        // Limpia ?updated=1 sin recargar la página
+        window.history.replaceState({}, document.title, "/clientes/");
+    });
+</script>
+{% endif %}
+
+<!-- ===============================
+     CONFIRMACIÓN ELIMINAR CLIENTE
+     Se ejecuta al hacer clic en 🗑️
+=============================== -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        // Selecciona todos los botones de eliminar
+        document.querySelectorAll(".btn-eliminar").forEach(btn => {
+
+            btn.addEventListener("click", () => {
+
+                // Datos obtenidos desde data-attributes
+                const clienteId = btn.dataset.id;
+                const nombreCliente = btn.dataset.nombre;
+
+                // Modal de confirmación SweetAlert
+                Swal.fire({
+                    icon: "warning",
+                    title: "¿Eliminar cliente?",
+                    html: `
+                        <p>Estás a punto de eliminar al cliente:</p>
+                        <strong>${nombreCliente}</strong>
+                        <p style="margin-top:10px;color:#b91c1c;">
+                            Esta acción no se puede deshacer.
+                        </p>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, eliminar",
+                    cancelButtonText: "Cancelar",
+                    confirmButtonColor: "#d81822",
+                    cancelButtonColor: "#6b7280"
+                }).then(result => {
+
+                    // Si el usuario confirma, redirige al backend
+                    if (result.isConfirmed) {
+                        const form = document.getElementById("form-eliminar");
+                        form.action = `/clientes/${clienteId}/eliminar`;
+                        form.submit();
+
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
