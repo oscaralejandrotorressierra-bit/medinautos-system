@@ -407,75 +407,109 @@ body {
 }
 
 /* =====================================================
-   SIDEBAR PRINCIPAL
-   Navegación lateral del sistema
+   SIDEBAR MODERNO – MEDINAUTOS
 ===================================================== */
 
 .sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 230px;
+    width: 260px;
     height: 100vh;
-    background-color: var(--gris-oscuro);
-    color: var(--blanco);
+    background-color: #f9fafc;
+    border-right: 1px solid #e5e7eb;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    padding: 20px 0;
     z-index: 1000;
 }
 
-/* Logo */
+/* LOGO */
 .sidebar-logo {
     text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
 }
 
 .sidebar-logo a {
-    color: var(--blanco);
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--gris-oscuro);
     text-decoration: none;
 }
 
-/* Navegación */
+/* NAV */
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    height: 100%;
 }
 
-.sidebar-nav a {
-    padding: 14px 26px;
-    color: var(--blanco);
-    text-decoration: none;
-    font-size: 15px;
+/* SECCIONES */
+.sidebar-section {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #8b8b8b;
+    margin: 18px 0 8px;
+}
+
+/* ITEM */
+.sidebar-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    transition: all 0.25s ease;
+    gap: 14px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    color: var(--gris-oscuro);
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 6px;
+    transition: all 0.2s ease;
 }
 
-.sidebar-nav a i {
+/* ICONO */
+.icon-box {
+    width: 36px;
+    height: 36px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.icon-box i {
     font-size: 16px;
 }
 
-/* Hover */
-.sidebar-nav a:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    color: var(--rojo);
+/* HOVER */
+.sidebar-item:hover {
+    background-color: #eef0f4;
 }
 
-/* Logout destacado */
-.sidebar-nav .logout {
-    margin-top: auto;
-    background-color: rgba(216, 24, 34, 0.15);
+/* ESPACIADOR */
+.sidebar-spacer {
+    flex-grow: 1;
 }
 
-.sidebar-nav .logout:hover {
+/* LOGOUT */
+.sidebar-item.logout {
+    background-color: #fdecec;
+    color: #b91c1c;
+}
+
+.sidebar-item.logout:hover {
     background-color: var(--rojo);
     color: var(--blanco);
 }
+
+/* AJUSTE CONTENIDO */
+.container {
+    margin-left: 260px;
+    padding: 40px;
+}
+
 
 /* =====================================================
    AJUSTE DEL CONTENIDO PRINCIPAL

@@ -47,38 +47,40 @@
     ====================================== -->
     <aside class="sidebar">
 
-        <!-- Logo / Nombre del sistema -->
         <div class="sidebar-logo">
             <a href="/dashboard">MedinAutos</a>
         </div>
 
-        <!-- Navegación principal -->
         <nav class="sidebar-nav">
 
-            <a href="/dashboard">
-                <i class="fa-solid fa-gauge"></i>
+            <p class="sidebar-section">PRINCIPAL</p>
+            <a href="/dashboard" class="sidebar-item">
+                <span class="icon-box"><i class="fa-solid fa-gauge"></i></span>
                 Dashboard
             </a>
 
-            <a href="/clientes">
-                <i class="fa-solid fa-users"></i>
+            <p class="sidebar-section">FLOTA</p>
+            <a href="/clientes" class="sidebar-item">
+                <span class="icon-box"><i class="fa-solid fa-users"></i></span>
                 Clientes
             </a>
 
-            <a href="/vehiculos">
-                <i class="fa-solid fa-car"></i>
+            <a href="/vehiculos" class="sidebar-item">
+                <span class="icon-box"><i class="fa-solid fa-car"></i></span>
                 Vehículos
             </a>
 
-            <!-- Cerrar sesión -->
-            <a href="/logout" class="logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
+            <div class="sidebar-spacer"></div>
+
+            <a href="/logout" class="sidebar-item logout">
+                <span class="icon-box"><i class="fa-solid fa-right-from-bracket"></i></span>
                 Salir
             </a>
 
         </nav>
     </aside>
     {% endif %}
+
 
     <!-- ======================================
          CONTENIDO PRINCIPAL
