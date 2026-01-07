@@ -83,12 +83,40 @@
 
 
     <!-- ======================================
-         CONTENIDO PRINCIPAL
-         Aquí se renderiza cada vista
-    ====================================== -->
-    <main class="container">
-        {% block content %}{% endblock %}
+     ÁREA DE TRABAJO (LAYOUT NUEVO)
+====================================== -->
+    <main class="app-layout">
+
+        <!-- ===== HEADER SUPERIOR ===== -->
+        <header class="topbar">
+
+            <div class="topbar-left">
+                <span class="breadcrumb">
+                    Inicio / {% block section %}{% endblock %}
+                </span>
+                <h1 class="page-title">
+                    {% block page_title %}{% endblock %}
+                </h1>
+            </div>
+
+            <div class="topbar-right">
+                <div class="user-box">
+                    <strong>Admin</strong>
+                    <span>MedinAutos</span>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- ===== CONTENIDO CENTRAL ===== -->
+        <section class="content-wrapper">
+            <div class="content-card">
+                {% block content %}{% endblock %}
+            </div>
+        </section>
+
     </main>
+
 
     <!-- ======================================
          FOOTER

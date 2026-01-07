@@ -25,9 +25,10 @@
 ===================================================== */
 body {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--gris-claro);
+    background: linear-gradient(180deg, #e5e7eb 0%, #f9fafc 40%);
     color: var(--gris-oscuro);
 }
+
 
 /* =====================================================
    FORZAR FONT AWESOME
@@ -72,13 +73,6 @@ body {
 
 .main-nav a:hover {
     color: var(--rojo);
-}
-
-/* =====================================================
-   CONTENEDOR GENERAL
-===================================================== */
-.container {
-    padding: 40px;
 }
 
 /* =====================================================
@@ -504,18 +498,103 @@ body {
     color: var(--blanco);
 }
 
-/* AJUSTE CONTENIDO */
-.container {
+/* =====================================================
+   LAYOUT PRINCIPAL (EMPRESARIAL)
+===================================================== */
+
+.app-layout {
     margin-left: 260px;
-    padding: 40px;
+    /* ancho del sidebar */
+    min-height: 100vh;
+    padding: 30px 40px;
+}
+
+/* =====================================================
+   TOPBAR (HEADER SUPERIOR)
+===================================================== */
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.topbar {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.breadcrumb {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 4px;
+}
+
+/* Usuario */
+.user-box {
+    text-align: right;
+}
+
+.user-box strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.user-box span {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* =====================================================
+   CONTENIDO CENTRAL (CARD GRANDE)
+===================================================== */
+
+.content-wrapper {
+    display: flex;
+}
+
+.content-card {
+    width: 100%;
+    background-color: var(--blanco);
+    border-radius: 22px;
+    padding: 32px;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.08),
+        0 8px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* =====================================================
+   TABLAS DENTRO DE CONTENT-CARD
+===================================================== */
+
+.content-card .table {
+    background-color: var(--blanco);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.content-card .table thead {
+    background-color: #1f2933;
 }
 
 
-/* =====================================================
-   AJUSTE DEL CONTENIDO PRINCIPAL
-===================================================== */
+.content-card h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
 
-.container {
-    margin-left: 230px;
-    padding: 40px;
+.content-card h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 14px;
 }
