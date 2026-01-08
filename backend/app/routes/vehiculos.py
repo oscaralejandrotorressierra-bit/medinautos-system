@@ -17,13 +17,17 @@ para ser capturadas por SweetAlert en el frontend.
 # ===============================
 from fastapi import APIRouter, Request, Depends, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+
+
 
 # ===============================
 # UTILIDADES
 # ===============================
 from starlette.status import HTTP_303_SEE_OTHER
-from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+
 
 # ===============================
 # BASE DE DATOS Y MODELOS
@@ -109,13 +113,22 @@ def crear_vehiculo(
     )
 
     db.add(vehiculo)
-    db.commit()
+    db.add(vehiculo)
 
-    # Flag para SweetAlert de éxito
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        return RedirectResponse(
+            "/vehiculos/crear?duplicate=1",
+            status_code=HTTP_303_SEE_OTHER
+        )
+
     return RedirectResponse(
         "/vehiculos?created=1",
         status_code=HTTP_303_SEE_OTHER
     )
+
 
 # ======================================================
 # FORMULARIO EDITAR VEHÍCULO (GET)
@@ -214,4 +227,5 @@ def eliminar_vehiculo(
     return RedirectResponse(
         "/vehiculos?deleted=1",
         status_code=HTTP_303_SEE_OTHER
-    )
+)
+

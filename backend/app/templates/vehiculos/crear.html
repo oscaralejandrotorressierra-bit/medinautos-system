@@ -12,6 +12,12 @@ CSS DEL MÓDULO
 <link rel="stylesheet" href="/static/css/vehiculos.css">
 {% endblock %}
 
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/vehiculos.js"></script>
+{% endblock %}
+
+
 {% block content %}
 
 <!-- ==================================================
@@ -127,31 +133,5 @@ CSS DEL MÓDULO
     </form>
 
 </div>
-
-{% endblock %}
-
-{# ------------------------------------------------------
-SWEETALERT DE ÉXITO (CREATE)
------------------------------------------------------- #}
-{% block extra_js %}
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-    /* ==========================================
-       ALERTA DE ÉXITO AL CREAR VEHÍCULO
-    ========================================== */
-
-    const params = new URLSearchParams(window.location.search);
-
-    if (params.has("created")) {
-        Swal.fire({
-            icon: "success",
-            title: "Vehículo registrado",
-            text: "El vehículo fue creado correctamente",
-            confirmButtonColor: "#d81822"
-        });
-    }
-</script>
 
 {% endblock %}

@@ -1,43 +1,23 @@
 // ======================================================
 // VEHÍCULOS - MEDINAUTOS
-// SweetAlert2 + Animaciones
+// SweetAlert2
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("Vehículos JS cargado 🚗");
 
-    // ==================================================
-    // SWEETALERT - CONFIRMAR ELIMINACIÓN
-    // ==================================================
-
-    const deleteForms = document.querySelectorAll(".form-delete");
-
-    deleteForms.forEach(form => {
-        form.addEventListener("submit", function (e) {
-            e.preventDefault(); // Evitamos envío inmediato
-
-            Swal.fire({
-                title: "¿Eliminar vehículo?",
-                text: "Esta acción no se puede deshacer",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d81822",
-                cancelButtonColor: "#6c757d",
-                confirmButtonText: "Sí, eliminar",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit(); // Ahora sí enviamos
-                }
-            });
-        });
-    });
-
-    // ==================================================
-    // SWEETALERT - MENSAJES DE ÉXITO (CRUD)
-    // ==================================================
-
     const params = new URLSearchParams(window.location.search);
+
+    if (params.has("duplicate")) {
+        Swal.fire({
+            icon: "error",
+            title: "Placa duplicada",
+            text: "La placa ya existe en el sistema y no se puede registrar nuevamente.",
+            confirmButtonColor: "#d81822"
+        }).then(() => {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        });
+    }
 
     if (params.has("created")) {
         Swal.fire({
@@ -65,22 +45,4 @@ document.addEventListener("DOMContentLoaded", () => {
             confirmButtonColor: "#d81822"
         });
     }
-
-    // ==================================================
-    // ANIMACIÓN SUAVE EN FILAS DE LA TABLA
-    // ==================================================
-
-    const rows = document.querySelectorAll(".vehiculos-table tbody tr");
-
-    rows.forEach((row, index) => {
-        row.style.opacity = "0";
-        row.style.transform = "translateY(10px)";
-
-        setTimeout(() => {
-            row.style.transition = "all 0.4s ease";
-            row.style.opacity = "1";
-            row.style.transform = "translateY(0)";
-        }, index * 60);
-    });
-
 });
