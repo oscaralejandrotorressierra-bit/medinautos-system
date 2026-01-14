@@ -7,11 +7,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from datetime import date
 
-from app.core.database import SessionLocal
+from backend. app.core.database import SessionLocal
 
-from app.models.orden_trabajo import OrdenTrabajo
-from app.models.detalle_orden import DetalleOrden
-from app.models.servicio import Servicio
+from backend. app.models.orden_trabajo import OrdenTrabajo
+from backend. app.models.detalle_orden import DetalleOrden
+from backend.app.models.servicio import Servicio
 
 # ======================================================
 # ROUTER

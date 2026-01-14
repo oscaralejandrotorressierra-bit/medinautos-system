@@ -11,9 +11,9 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from openpyxl import Workbook
 
-from app.core.database import get_db
-from app.models.orden_trabajo import OrdenTrabajo
-from app.core.security import solo_admin
+from backend. app.core.database import get_db
+from backend. app.models.orden_trabajo import OrdenTrabajo
+from backend. app.core.security import solo_admin
 
 # ======================================================
 # ROUTER

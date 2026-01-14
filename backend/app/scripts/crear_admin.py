@@ -5,9 +5,9 @@ Se ejecuta UNA sola vez.
 
 from sqlalchemy.orm import Session
 
-from app.core.database import SessionLocal
-from app.models.usuario import Usuario
-from app.core.security import encriptar_password
+from backend. app.models.usuario import Usuario
+from backend. app.core.database import SessionLocal
+from backend. app.core.security import encriptar_password
 
 
 

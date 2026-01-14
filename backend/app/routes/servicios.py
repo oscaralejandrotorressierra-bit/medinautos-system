@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from app.core.database import SessionLocal
-from app.models.servicio import Servicio
-from app.schemas.servicio import ServicioCreate, ServicioResponse
+from backend.app.core.database import SessionLocal
+from backend.app.models.servicio import Servicio
+from backend.app.schemas.servicio import ServicioCreate, ServicioResponse
 
 router = APIRouter(
     prefix="/servicios",

@@ -228,4 +228,3 @@ def eliminar_vehiculo(
         "/vehiculos?deleted=1",
         status_code=HTTP_303_SEE_OTHER
 )
-

@@ -5,14 +5,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.core.database import get_db
-from app.models.orden_trabajo import OrdenTrabajo
-from app.schemas.orden_trabajo import (
+from backend. app.core.database import get_db
+from backend. app.models.orden_trabajo import OrdenTrabajo
+from backend. app.schemas.orden_trabajo import (
     OrdenTrabajoCreate,
     OrdenTrabajoResponse
 )
 
-from app.core.security import admin_o_mecanico
+from backend. app.core.security import admin_o_mecanico
 
 # ======================================================
 # ROUTER
