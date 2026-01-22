@@ -416,6 +416,7 @@ body {
     display: flex;
     flex-direction: column;
     z-index: 1000;
+    overflow-y: auto;
 }
 
 /* LOGO */
@@ -436,6 +437,8 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow-y: auto;
+    padding-right: 6px;
 }
 
 /* SECCIONES */
@@ -445,6 +448,36 @@ body {
     letter-spacing: 1px;
     color: #8b8b8b;
     margin: 18px 0 8px;
+}
+
+.sidebar-module {
+    padding: 12px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+    margin-bottom: 14px;
+}
+
+.sidebar-submenu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+    margin-left: 8px;
+    padding-left: 12px;
+    border-left: 2px solid #eef0f4;
+}
+
+.sidebar-subitem {
+    font-size: 0.92rem;
+    font-weight: 600;
+    background: #f6f7fb;
+    margin-bottom: 0;
+}
+
+.sidebar-subitem .icon-box {
+    width: 30px;
+    height: 30px;
 }
 
 /* ITEM */
@@ -459,6 +492,7 @@ body {
     font-weight: 600;
     margin-bottom: 6px;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 /* ICONO */
@@ -570,6 +604,7 @@ body {
     box-shadow:
         0 20px 40px rgba(0, 0, 0, 0.08),
         0 8px 16px rgba(0, 0, 0, 0.06);
+    overflow-x: auto;
 }
 
 /* =====================================================
@@ -597,4 +632,100 @@ body {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 14px;
+}
+
+/* =====================================================
+   RESPONSIVE BASE
+===================================================== */
+
+@media (max-width: 1100px) {
+    .sidebar {
+        width: 220px;
+    }
+
+    .app-layout {
+        margin-left: 220px;
+        padding: 24px;
+    }
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        padding: 16px;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .sidebar-logo {
+        margin-bottom: 0;
+        margin-right: 16px;
+        text-align: left;
+    }
+
+    .sidebar-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .sidebar-section {
+        flex-basis: 100%;
+        margin: 12px 0 4px;
+    }
+
+    .sidebar-item {
+        padding: 10px 12px;
+    }
+
+    .icon-box {
+        width: 32px;
+        height: 32px;
+    }
+
+    .app-layout {
+        margin-left: 0;
+        padding: 20px 16px;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .content-card {
+        padding: 20px;
+    }
+
+    .main-footer {
+        margin-top: 20px;
+        padding: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        padding: 12px;
+        flex-direction: column;
+    }
+
+    .sidebar-nav {
+        flex-direction: column;
+    }
+
+    .sidebar-item {
+        width: 100%;
+    }
+
+    .user-box {
+        text-align: left;
+    }
+
+    .page-title {
+        font-size: 22px;
+    }
 }

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Prestamos de Herramientas | MedinAutos{% endblock %}
+{% block section %}Herramientas{% endblock %}
+{% block page_title %}Prestamos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Prestamos de herramientas</h1>
+        <p class="servicios-subtitle">Controla prestamos y devoluciones por mecanico.</p>
+    </div>
+    <a href="/herramientas" class="btn-secondary">Volver</a>
+</div>
+
+<div class="orden-card">
+    <h2>Registrar prestamo</h2>
+    <form id="form-prestamo" class="orden-mecanico-form">
+        <div class="form-group">
+            <label>Herramienta</label>
+            <select name="herramienta_id" data-role="herramienta-select" required>
+                <option value="">Selecciona una herramienta</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Mecanico</label>
+            <select name="mecanico_id" data-role="mecanico-select" required>
+                <option value="">Selecciona un mecanico</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Observaciones</label>
+            <input type="text" name="observaciones" maxlength="255" placeholder="Opcional">
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-handshake"></i>
+                Registrar prestamo
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="servicios-card">
+    <table class="servicios-table">
+        <thead>
+            <tr>
+                <th>Herramienta</th>
+                <th>Mecanico</th>
+                <th>Prestamo</th>
+                <th>Devolucion</th>
+                <th>Observaciones</th>
+                <th class="acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="prestamos-body">
+            <tr>
+                <td colspan="6" class="servicios-loading">Cargando prestamos...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/prestamos_herramientas.js"></script>
+{% endblock %}

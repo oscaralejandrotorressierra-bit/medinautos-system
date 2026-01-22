@@ -3,6 +3,8 @@
 // CRUD via API
 // ======================================================
 
+const API_BASE = "/api";
+
 document.addEventListener("DOMContentLoaded", () => {
     const tablaCategorias = document.getElementById("categorias-body");
     const formCategoria = document.getElementById("form-categoria");
@@ -32,7 +34,9 @@ function prepararFormulario(formulario, tablaCategorias) {
 
         const modo = formulario.dataset.mode || "create";
         const categoriaId = formulario.dataset.id;
-        const url = modo === "edit" ? `/categorias-servicio/${categoriaId}` : "/categorias-servicio/";
+        const url = modo === "edit"
+            ? `${API_BASE}/categorias-servicio/${categoriaId}`
+            : `${API_BASE}/categorias-servicio/`;
         const method = modo === "edit" ? "PUT" : "POST";
 
         try {
@@ -74,7 +78,7 @@ async function cargarCategorias(tablaCategorias) {
     }
 
     try {
-        const response = await fetch("/categorias-servicio/");
+        const response = await fetch(`${API_BASE}/categorias-servicio/`);
         if (!response.ok) {
             throw new Error("No se pudieron cargar las categorias.");
         }
@@ -152,7 +156,7 @@ async function editarCategoria(categoriaId) {
     }
 
     try {
-        const response = await fetch(`/categorias-servicio/${categoriaId}`);
+        const response = await fetch(`${API_BASE}/categorias-servicio/${categoriaId}`);
         if (!response.ok) {
             throw new Error("No se pudo cargar la categoria.");
         }
@@ -183,7 +187,7 @@ async function editarCategoria(categoriaId) {
 
 async function toggleCategoria(categoriaId, tablaCategorias) {
     try {
-        const response = await fetch(`/categorias-servicio/${categoriaId}/toggle`, {
+        const response = await fetch(`${API_BASE}/categorias-servicio/${categoriaId}/toggle`, {
             method: "PATCH"
         });
 
@@ -221,7 +225,7 @@ function eliminarCategoria(boton, tablaCategorias) {
         }
 
         try {
-            const response = await fetch(`/categorias-servicio/${categoriaId}`, {
+            const response = await fetch(`${API_BASE}/categorias-servicio/${categoriaId}`, {
                 method: "DELETE"
             });
 

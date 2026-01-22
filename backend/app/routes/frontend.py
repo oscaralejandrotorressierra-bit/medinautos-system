@@ -86,6 +86,86 @@ def vista_nuevo_servicio(request: Request):
         {"request": request}
     )
 
+@router.get("/mecanicos", response_class=HTMLResponse)
+def vista_mecanicos(request: Request):
+    return templates.TemplateResponse(
+        "mecanicos/listar.html",
+        {"request": request}
+    )
+
+@router.get("/mecanicos/nuevo", response_class=HTMLResponse)
+def vista_nuevo_mecanico(request: Request):
+    return templates.TemplateResponse(
+        "mecanicos/nuevo.html",
+        {"request": request}
+    )
+
+@router.get("/mecanicos/{mecanico_id}/editar", response_class=HTMLResponse)
+def vista_editar_mecanico(request: Request, mecanico_id: int):
+    return templates.TemplateResponse(
+        "mecanicos/editar.html",
+        {
+            "request": request,
+            "mecanico_id": mecanico_id
+        }
+    )
+
+@router.get("/almacen", response_class=HTMLResponse)
+def vista_almacen(request: Request):
+    return templates.TemplateResponse(
+        "almacen/listar.html",
+        {"request": request}
+    )
+
+@router.get("/almacen/nuevo", response_class=HTMLResponse)
+def vista_nuevo_insumo(request: Request):
+    return templates.TemplateResponse(
+        "almacen/nuevo.html",
+        {"request": request}
+    )
+
+@router.get("/almacen/{item_id}/editar", response_class=HTMLResponse)
+def vista_editar_insumo(request: Request, item_id: int):
+    return templates.TemplateResponse(
+        "almacen/editar.html",
+        {"request": request, "item_id": item_id}
+    )
+
+@router.get("/almacen/proveedores", response_class=HTMLResponse)
+def vista_proveedores(request: Request):
+    return templates.TemplateResponse(
+        "almacen/proveedores.html",
+        {"request": request}
+    )
+
+@router.get("/herramientas", response_class=HTMLResponse)
+def vista_herramientas(request: Request):
+    return templates.TemplateResponse(
+        "herramientas/listar.html",
+        {"request": request}
+    )
+
+@router.get("/herramientas/nuevo", response_class=HTMLResponse)
+def vista_nueva_herramienta(request: Request):
+    return templates.TemplateResponse(
+        "herramientas/nuevo.html",
+        {"request": request}
+    )
+
+@router.get("/herramientas/{herramienta_id}/editar", response_class=HTMLResponse)
+def vista_editar_herramienta(request: Request, herramienta_id: int):
+    return templates.TemplateResponse(
+        "herramientas/editar.html",
+        {"request": request, "herramienta_id": herramienta_id}
+    )
+
+@router.get("/herramientas/prestamos", response_class=HTMLResponse)
+def vista_prestamos_herramientas(request: Request):
+    return templates.TemplateResponse(
+        "herramientas/prestamos.html",
+        {"request": request}
+    )
+
 @router.get("/ordenes", response_class=HTMLResponse)
 def vista_ordenes(request: Request, db: Session = Depends(get_db)):
     ordenes = db.query(OrdenTrabajo).order_by(OrdenTrabajo.id.desc()).all()

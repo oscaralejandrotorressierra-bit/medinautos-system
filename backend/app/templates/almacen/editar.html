@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Insumo | MedinAutos{% endblock %}
+{% block section %}Almacen{% endblock %}
+{% block page_title %}Editar Insumo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<form id="form-almacen" class="form-card servicio-form" data-mode="edit" data-id="{{ item_id }}">
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" name="nombre" required>
+        </div>
+
+        <div class="form-group">
+            <label>Categoria</label>
+            <input type="text" name="categoria">
+        </div>
+
+        <div class="form-group form-group-full">
+            <label>Descripcion</label>
+            <textarea name="descripcion" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Unidad *</label>
+            <input type="text" name="unidad" required>
+        </div>
+
+        <div class="form-group">
+            <label>Stock minimo</label>
+            <input type="number" name="stock_minimo" min="0" step="0.01">
+        </div>
+
+        <div class="form-group">
+            <label>Valor proveedor</label>
+            <input type="text" name="valor_proveedor" data-role="money-input" inputmode="numeric">
+        </div>
+
+        <div class="form-group">
+            <label>Valor taller</label>
+            <input type="text" name="valor_taller" data-role="money-input" inputmode="numeric">
+        </div>
+
+        <div class="form-group">
+            <label>Proveedor</label>
+            <select name="proveedor_id" data-role="proveedor-select">
+                <option value="">Sin proveedor</option>
+            </select>
+        </div>
+
+        <div class="form-group form-group-switch">
+            <label class="switch-label">Activo</label>
+            <label class="switch">
+                <input type="checkbox" name="activo">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Guardar cambios</button>
+            <a href="/almacen" class="btn-secondary">Cancelar</a>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/almacen.js"></script>
+{% endblock %}

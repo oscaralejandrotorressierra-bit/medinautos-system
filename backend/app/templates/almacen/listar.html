@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Almacen | MedinAutos{% endblock %}
+{% block section %}Almacen{% endblock %}
+{% block page_title %}Almacen{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Almacen</h1>
+        <p class="servicios-subtitle">Controla insumos, stock y costos del taller.</p>
+    </div>
+
+    <div class="servicios-actions">
+        <a href="/almacen/proveedores" class="btn-secondary">
+            <i class="fa-solid fa-truck-field"></i> Proveedores
+        </a>
+        <a href="/almacen/nuevo" class="btn-primary">
+            <i class="fa-solid fa-plus"></i> Nuevo insumo
+        </a>
+    </div>
+</div>
+
+<div class="servicios-card">
+    <table class="servicios-table">
+        <thead>
+            <tr>
+                <th>Insumo</th>
+                <th>Categoria</th>
+                <th>Unidad</th>
+                <th>Stock</th>
+                <th>Minimo</th>
+                <th>Valor taller</th>
+                <th>Proveedor</th>
+                <th>Estado</th>
+                <th class="acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="almacen-body">
+            <tr>
+                <td colspan="9" class="servicios-loading">Cargando inventario...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/almacen.js"></script>
+{% endblock %}

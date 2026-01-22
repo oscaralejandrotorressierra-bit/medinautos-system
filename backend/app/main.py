@@ -21,6 +21,14 @@ from backend.app.models.servicio import Servicio
 from backend.app.models.categoria_servicio import CategoriaServicio
 from backend.app.models.orden_trabajo import OrdenTrabajo
 from backend.app.models.detalle_orden import DetalleOrden
+from backend.app.models.mecanico import Mecanico
+from backend.app.models.orden_mecanico import OrdenMecanico
+from backend.app.models.proveedor import Proveedor
+from backend.app.models.almacen_item import AlmacenItem
+from backend.app.models.movimiento_almacen import MovimientoAlmacen
+from backend.app.models.detalle_almacen import DetalleAlmacen
+from backend.app.models.herramienta import Herramienta
+from backend.app.models.prestamo_herramienta import PrestamoHerramienta
 
 from sqlalchemy.orm import Session
 from backend.app.core.database import SessionLocal
@@ -40,6 +48,10 @@ from backend.app.routes import servicios
 from backend.app.routes import categorias_servicio
 from backend.app.routes import ordenes_trabajo
 from backend.app.routes import detalle_orden
+from backend.app.routes import mecanicos
+from backend.app.routes import almacen
+from backend.app.routes import detalle_almacen
+from backend.app.routes import herramientas
 
 
 
@@ -88,6 +100,14 @@ Servicio.metadata.create_all(bind=engine)
 CategoriaServicio.metadata.create_all(bind=engine)
 OrdenTrabajo.metadata.create_all(bind=engine)
 DetalleOrden.metadata.create_all(bind=engine)
+Mecanico.metadata.create_all(bind=engine)
+OrdenMecanico.metadata.create_all(bind=engine)
+Proveedor.metadata.create_all(bind=engine)
+AlmacenItem.metadata.create_all(bind=engine)
+MovimientoAlmacen.metadata.create_all(bind=engine)
+DetalleAlmacen.metadata.create_all(bind=engine)
+Herramienta.metadata.create_all(bind=engine)
+PrestamoHerramienta.metadata.create_all(bind=engine)
 
 
 crear_admin_si_no_existe()
@@ -122,10 +142,14 @@ app.include_router(frontend.router)   # LOGIN / DASHBOARD / LOGOUT
 app.include_router(clientes.router)   # CRUD CLIENTES
 app.include_router(dashboard.router)  # DATOS DEL DASHBOARD
 app.include_router(vehiculos.router)  # CRUD VEHICULOS
-app.include_router(servicios.router)  
-app.include_router(categorias_servicio.router)
-app.include_router(ordenes_trabajo.router)
-app.include_router(detalle_orden.router)
+app.include_router(servicios.router, prefix="/api")
+app.include_router(categorias_servicio.router, prefix="/api")
+app.include_router(ordenes_trabajo.router, prefix="/api")
+app.include_router(detalle_orden.router, prefix="/api")
+app.include_router(mecanicos.router, prefix="/api")
+app.include_router(almacen.router, prefix="/api")
+app.include_router(detalle_almacen.router, prefix="/api")
+app.include_router(herramientas.router, prefix="/api")
 
 
 

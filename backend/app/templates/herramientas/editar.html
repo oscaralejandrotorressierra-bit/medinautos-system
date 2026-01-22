@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Herramienta | MedinAutos{% endblock %}
+{% block section %}Herramientas{% endblock %}
+{% block page_title %}Editar Herramienta{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<form id="form-herramienta" class="form-card servicio-form" data-mode="edit" data-id="{{ herramienta_id }}">
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" name="nombre" required>
+        </div>
+
+        <div class="form-group">
+            <label>Codigo *</label>
+            <input type="text" name="codigo" required>
+        </div>
+
+        <div class="form-group form-group-full">
+            <label>Descripcion</label>
+            <textarea name="descripcion" rows="3"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Ubicacion</label>
+            <input type="text" name="ubicacion">
+        </div>
+
+        <div class="form-group">
+            <label>Valor</label>
+            <input type="number" name="valor" min="0" step="0.01">
+        </div>
+
+        <div class="form-group">
+            <label>Estado</label>
+            <select name="estado">
+                <option value="disponible">Disponible</option>
+                <option value="mantenimiento">Mantenimiento</option>
+            </select>
+        </div>
+
+        <div class="form-group form-group-switch">
+            <label class="switch-label">Activo</label>
+            <label class="switch">
+                <input type="checkbox" name="activo">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Guardar cambios</button>
+            <a href="/herramientas" class="btn-secondary">Cancelar</a>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/herramientas.js"></script>
+{% endblock %}

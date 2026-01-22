@@ -22,3 +22,9 @@ class OrdenTrabajo(Base):
 
     cliente = relationship("Cliente", backref="ordenes")
     vehiculo = relationship("Vehiculo", backref="ordenes")
+
+    asignaciones_mecanicos = relationship(
+        "OrdenMecanico",
+        back_populates="orden",
+        cascade="all, delete-orphan"
+    )

@@ -3,6 +3,8 @@
 // Listado + CRUD via API
 // ======================================================
 
+const API_BASE = "/api";
+
 document.addEventListener("DOMContentLoaded", () => {
     const formServicio = document.getElementById("form-servicio");
     const tablaServicios = document.getElementById("servicios-body");
@@ -43,7 +45,9 @@ function prepararFormulario(formulario) {
             return;
         }
 
-        const url = modo === "edit" ? `/servicios/${servicioId}` : "/servicios/";
+        const url = modo === "edit"
+            ? `${API_BASE}/servicios/${servicioId}`
+            : `${API_BASE}/servicios/`;
         const method = modo === "edit" ? "PUT" : "POST";
 
         try {
@@ -92,7 +96,7 @@ function prepararFormulario(formulario) {
 
 async function cargarServicio(servicioId, formulario) {
     try {
-        const response = await fetch(`/servicios/${servicioId}`);
+        const response = await fetch(`${API_BASE}/servicios/${servicioId}`);
 
         if (!response.ok) {
             throw new Error("No se pudo cargar el servicio.");
@@ -155,7 +159,7 @@ function construirPayload(formulario, incluirActivo) {
 
 async function cargarServicios(tablaServicios) {
     try {
-        const response = await fetch("/servicios/");
+        const response = await fetch(`${API_BASE}/servicios/`);
 
         if (!response.ok) {
             throw new Error("No se pudo cargar el listado.");
@@ -245,7 +249,7 @@ function confirmarEliminacion(boton, tablaServicios) {
         }
 
         try {
-            const response = await fetch(`/servicios/${servicioId}`, {
+            const response = await fetch(`${API_BASE}/servicios/${servicioId}`, {
                 method: "DELETE"
             });
 
@@ -275,7 +279,7 @@ async function cambiarEstado(boton, tablaServicios) {
     const servicioId = boton.dataset.id;
 
     try {
-        const response = await fetch(`/servicios/${servicioId}/toggle`, {
+        const response = await fetch(`${API_BASE}/servicios/${servicioId}/toggle`, {
             method: "PATCH"
         });
 
@@ -373,7 +377,7 @@ async function cargarCategoriasSelect(formulario) {
     select.innerHTML = `<option value="">Sin categoria</option>`;
 
     try {
-        const response = await fetch("/categorias-servicio/");
+        const response = await fetch(`${API_BASE}/categorias-servicio/`);
         if (!response.ok) {
             throw new Error("No se pudieron cargar las categorias.");
         }
