@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Orden #{{ orden.id }} | MedinAutos{% endblock %}
+{% block section %}Ordenes{% endblock %}
+{% block page_title %}Orden #{{ orden.id }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Orden #{{ orden.id }}</h1>
+        <p class="servicios-subtitle">Gestiona la informacion y los servicios de la orden.</p>
+    </div>
+
+    <a href="/ordenes" class="btn-secondary">Volver</a>
+</div>
+
+<div class="orden-layout" data-orden-id="{{ orden.id }}">
+    <div class="orden-card">
+        <h2>Datos de la orden</h2>
+        <form id="form-orden">
+            <div class="form-group">
+                <label>Descripcion *</label>
+                <textarea name="descripcion" rows="3" required>{{ orden.descripcion }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Cliente *</label>
+                <select name="cliente_id" required>
+                    {% for cliente in clientes %}
+                    <option value="{{ cliente.id }}" {% if cliente.id==orden.cliente_id %}selected{% endif %}>
+                        {{ cliente.nombre }} - {{ cliente.documento }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Vehiculo *</label>
+                <select name="vehiculo_id" required>
+                    {% for vehiculo in vehiculos %}
+                    <option value="{{ vehiculo.id }}" {% if vehiculo.id==orden.vehiculo_id %}selected{% endif %}>
+                        {{ vehiculo.placa }} - {{ vehiculo.marca }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Estado</label>
+                <select id="estado-select">
+                    <option value="abierta" {% if orden.estado=="abierta" %}selected{% endif %}>Abierta</option>
+                    <option value="en_proceso" {% if orden.estado=="en_proceso" %}selected{% endif %}>En proceso</option>
+                    <option value="cerrada" {% if orden.estado=="cerrada" %}selected{% endif %}>Cerrada</option>
+                    <option value="cancelada" {% if orden.estado=="cancelada" %}selected{% endif %}>Cancelada</option>
+                </select>
+            </div>
+
+            <div class="orden-total">
+                Total actual:
+                <span id="orden-total">${{ "{:,.0f}".format(orden.total or 0) }}</span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar cambios
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="orden-card">
+        <h2>Servicios de la orden</h2>
+        <form id="form-detalle" class="orden-detalle-form">
+            <div class="form-group">
+                <label>Servicio</label>
+                <select name="servicio_id" data-role="servicio-select" required>
+                    <option value="">Selecciona un servicio</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Cantidad</label>
+                <input type="number" name="cantidad" min="1" value="1" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Agregar servicio
+                </button>
+            </div>
+        </form>
+
+        <table class="servicios-table orden-table">
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                    <th class="acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="detalle-body">
+                <tr>
+                    <td colspan="5" class="servicios-loading">Cargando servicios...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/ordenes.js"></script>
+{% if request.query_params.get('created') %}
+<script>
+    Swal.fire({
+        icon: "success",
+        title: "Orden creada",
+        text: "La orden fue registrada correctamente.",
+        confirmButtonColor: "#d81822"
+    });
+</script>
+{% endif %}
+{% endblock %}

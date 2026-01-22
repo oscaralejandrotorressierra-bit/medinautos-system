@@ -1,25 +1,30 @@
 """
-Rutas Frontend - Autenticación
+Rutas Frontend - Autenticación y Vistas
 Sistema MedinAutos
 """
 
 from fastapi import APIRouter, Request, Form, Depends
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 from sqlalchemy.orm import Session
 from fastapi.templating import Jinja2Templates
 
 from backend.app.core.database import get_db
 from backend.app.models.usuario import Usuario
+from backend.app.models.orden_trabajo import OrdenTrabajo
+from backend.app.models.cliente import Cliente
+from backend.app.models.vehiculo import Vehiculo
 from backend.app.core.security import (
     verificar_password,
-    crear_token,
-    usuario_autenticado
+    crear_token
 )
 
 router = APIRouter(tags=["Frontend"])
 templates = Jinja2Templates(directory="backend/app/templates")
 
 
+# =====================================
+# LOGIN (FORMULARIO)
+# =====================================
 @router.get("/login")
 def login_form(request: Request):
     return templates.TemplateResponse(
@@ -28,6 +33,9 @@ def login_form(request: Request):
     )
 
 
+# =====================================
+# LOGIN (PROCESO)
+# =====================================
 @router.post("/login")
 def login_submit(
     request: Request,
@@ -59,6 +67,122 @@ def login_submit(
     return response
 
 
+# =====================================
+# SERVICIOS - LISTAR (FRONTEND)
+# =====================================
+@router.get("/servicios", response_class=HTMLResponse)
+def vista_servicios(request: Request):
+    return templates.TemplateResponse(
+        "servicios/listar.html",
+        {"request": request}
+    )
+# =====================================
+# SERVICIOS - NUEVO (FORMULARIO)
+# =====================================
+@router.get("/servicios/nuevo", response_class=HTMLResponse)
+def vista_nuevo_servicio(request: Request):
+    return templates.TemplateResponse(
+        "servicios/nuevo.html",
+        {"request": request}
+    )
+
+@router.get("/ordenes", response_class=HTMLResponse)
+def vista_ordenes(request: Request, db: Session = Depends(get_db)):
+    ordenes = db.query(OrdenTrabajo).order_by(OrdenTrabajo.id.desc()).all()
+    return templates.TemplateResponse(
+        "ordenes/listar.html",
+        {
+            "request": request,
+            "ordenes": ordenes
+        }
+    )
+
+@router.get("/ordenes/nuevo", response_class=HTMLResponse)
+def vista_nueva_orden(request: Request, db: Session = Depends(get_db)):
+    clientes = db.query(Cliente).order_by(Cliente.nombre.asc()).all()
+    vehiculos = db.query(Vehiculo).order_by(Vehiculo.placa.asc()).all()
+    return templates.TemplateResponse(
+        "ordenes/nuevo.html",
+        {
+            "request": request,
+            "clientes": clientes,
+            "vehiculos": vehiculos
+        }
+    )
+
+@router.post("/ordenes/nuevo")
+def crear_orden_form(
+    request: Request,
+    descripcion: str = Form(...),
+    cliente_id: int = Form(...),
+    vehiculo_id: int = Form(...),
+    db: Session = Depends(get_db)
+):
+    orden = OrdenTrabajo(
+        descripcion=descripcion,
+        cliente_id=cliente_id,
+        vehiculo_id=vehiculo_id,
+        estado="abierta",
+        total=0.0
+    )
+
+    db.add(orden)
+    db.commit()
+    db.refresh(orden)
+
+    return RedirectResponse(
+        url=f"/ordenes/{orden.id}?created=1",
+        status_code=303
+    )
+
+@router.get("/ordenes/{orden_id}", response_class=HTMLResponse)
+def vista_detalle_orden(
+    request: Request,
+    orden_id: int,
+    db: Session = Depends(get_db)
+):
+    orden = db.query(OrdenTrabajo).filter(
+        OrdenTrabajo.id == orden_id
+    ).first()
+
+    if not orden:
+        return RedirectResponse("/ordenes", status_code=303)
+
+    clientes = db.query(Cliente).order_by(Cliente.nombre.asc()).all()
+    vehiculos = db.query(Vehiculo).order_by(Vehiculo.placa.asc()).all()
+
+    return templates.TemplateResponse(
+        "ordenes/detalle.html",
+        {
+            "request": request,
+            "orden": orden,
+            "clientes": clientes,
+            "vehiculos": vehiculos
+        }
+    )
+
+@router.get("/servicios/categorias", response_class=HTMLResponse)
+def vista_categorias_servicio(request: Request):
+    return templates.TemplateResponse(
+        "servicios/categorias.html",
+        {"request": request}
+    )
+
+@router.get("/servicios/{servicio_id}/editar", response_class=HTMLResponse)
+def vista_editar_servicio(request: Request, servicio_id: int):
+    return templates.TemplateResponse(
+        "servicios/editar.html",
+        {
+            "request": request,
+            "servicio_id": servicio_id
+        }
+    )
+
+
+
+# =====================================
+# LOGOUT
+# =====================================
 @router.get("/logout")
 def logout():
     response = RedirectResponse("/login", status_code=303)

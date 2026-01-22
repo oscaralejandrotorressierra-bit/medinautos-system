@@ -5,14 +5,16 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from backend. app.core.database import get_db
-from backend. app.models.orden_trabajo import OrdenTrabajo
-from backend. app.schemas.orden_trabajo import (
+from backend.app.core.database import get_db
+from backend.app.models.orden_trabajo import OrdenTrabajo
+from backend.app.schemas.orden_trabajo import (
     OrdenTrabajoCreate,
+    OrdenTrabajoUpdate,
     OrdenTrabajoResponse
 )
+from backend.app.models.detalle_orden import DetalleOrden
 
-from backend. app.core.security import admin_o_mecanico
+from backend.app.core.security import admin_o_mecanico
 
 # ======================================================
 # ROUTER
@@ -71,6 +73,31 @@ def obtener_orden(
     if not orden:
         raise HTTPException(status_code=404, detail="Orden no encontrada")
 
+    return orden
+
+# ======================================================
+# ACTUALIZAR ORDEN
+# ======================================================
+
+@router.put("/{orden_id}", response_model=OrdenTrabajoResponse)
+def actualizar_orden(
+    orden_id: int,
+    data: OrdenTrabajoUpdate,
+    db: Session = Depends(get_db),
+    usuario=Depends(admin_o_mecanico)
+):
+    orden = db.query(OrdenTrabajo).filter(
+        OrdenTrabajo.id == orden_id
+    ).first()
+
+    if not orden:
+        raise HTTPException(status_code=404, detail="Orden no encontrada")
+
+    for campo, valor in data.dict(exclude_unset=True).items():
+        setattr(orden, campo, valor)
+
+    db.commit()
+    db.refresh(orden)
     return orden
 
 # ======================================================
@@ -140,3 +167,29 @@ def reabrir_orden(
         "mensaje": "Orden reabierta correctamente",
         "nuevo_estado": orden.estado
     }
+
+# ======================================================
+# ELIMINAR ORDEN
+# ======================================================
+
+@router.delete("/{orden_id}")
+def eliminar_orden(
+    orden_id: int,
+    db: Session = Depends(get_db),
+    usuario=Depends(admin_o_mecanico)
+):
+    orden = db.query(OrdenTrabajo).filter(
+        OrdenTrabajo.id == orden_id
+    ).first()
+
+    if not orden:
+        raise HTTPException(status_code=404, detail="Orden no encontrada")
+
+    db.query(DetalleOrden).filter(
+        DetalleOrden.orden_id == orden_id
+    ).delete(synchronize_session=False)
+
+    db.delete(orden)
+    db.commit()
+
+    return {"mensaje": "Orden eliminada correctamente"}

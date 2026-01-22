@@ -6,13 +6,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from backend. app.core.database import SessionLocal
+from backend.app.core.database import SessionLocal
 
 from backend.app.models.detalle_orden import DetalleOrden
 from backend.app.models.orden_trabajo import OrdenTrabajo
 from backend.app.models.servicio import Servicio
 
-from backend. app.schemas.detalle_orden import (
+from backend.app.schemas.detalle_orden import (
     DetalleOrdenCreate,
     DetalleOrdenResponse
 )

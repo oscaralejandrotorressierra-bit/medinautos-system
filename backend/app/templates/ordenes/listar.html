@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Ordenes | MedinAutos{% endblock %}
+{% block section %}Ordenes{% endblock %}
+{% block page_title %}Ordenes{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Ordenes de trabajo</h1>
+        <p class="servicios-subtitle">Controla el estado y los servicios de cada orden.</p>
+    </div>
+
+    <a href="/ordenes/nuevo" class="btn-primary">
+        <i class="fa-solid fa-plus"></i> Nueva orden
+    </a>
+</div>
+
+<div class="servicios-card">
+    <table class="servicios-table">
+        <thead>
+            <tr>
+                <th>Orden</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Vehiculo</th>
+                <th>Estado</th>
+                <th>Total</th>
+                <th class="acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orden in ordenes %}
+            <tr data-id="{{ orden.id }}">
+                <td class="servicio-nombre">#{{ orden.id }}</td>
+                <td>{{ orden.fecha.strftime("%Y-%m-%d") if orden.fecha else "-" }}</td>
+                <td>{{ orden.cliente.nombre if orden.cliente else "-" }}</td>
+                <td>{{ orden.vehiculo.placa if orden.vehiculo else "-" }}</td>
+                <td>
+                    {% set estado = orden.estado or "abierta" %}
+                    {% if estado == "cerrada" %}
+                        {% set badge_class = "badge-estado-cerrada" %}
+                        {% set estado_label = "Cerrada" %}
+                    {% elif estado == "en_proceso" %}
+                        {% set badge_class = "badge-estado-proceso" %}
+                        {% set estado_label = "En proceso" %}
+                    {% elif estado == "cancelada" %}
+                        {% set badge_class = "badge-estado-cancelada" %}
+                        {% set estado_label = "Cancelada" %}
+                    {% else %}
+                        {% set badge_class = "badge-estado-abierta" %}
+                        {% set estado_label = "Abierta" %}
+                    {% endif %}
+                    <span class="badge {{ badge_class }}">{{ estado_label }}</span>
+                </td>
+                <td>${{ "{:,.0f}".format(orden.total or 0) }}</td>
+                <td class="acciones">
+                    <a href="/ordenes/{{ orden.id }}" class="btn-icon btn-edit" title="Ver orden">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                    <button type="button" class="btn-icon btn-delete btn-orden-delete" data-id="{{ orden.id }}"
+                        data-numero="{{ orden.id }}" title="Eliminar orden">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="servicios-empty">No hay ordenes registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/ordenes.js"></script>
+{% endblock %}

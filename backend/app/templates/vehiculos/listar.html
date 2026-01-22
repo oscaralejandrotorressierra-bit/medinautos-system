@@ -1,52 +1,27 @@
-{# ======================================================
-LISTADO DE VEHÍCULOS - MEDINAUTOS
-
-Este template:
-- Muestra todos los vehículos registrados
-- Incluye el cliente asociado
-- Permite editar y eliminar
-- Integra SweetAlert2
-====================================================== #}
-
 {% extends "base.html" %}
 
-{# ------------------------------------------------------
-TÍTULO DE LA PESTAÑA
------------------------------------------------------- #}
-{% block title %}Vehículos | MedinAutos{% endblock %}
+{% block title %}Vehiculos | MedinAutos{% endblock %}
+{% block section %}Vehiculos{% endblock %}
+{% block page_title %}Vehiculos{% endblock %}
 
-{# ------------------------------------------------------
-CSS ESPECÍFICO DEL MÓDULO
------------------------------------------------------- #}
 {% block extra_css %}
-<link rel="stylesheet" href="/static/css/vehiculos.css">
+<link rel="stylesheet" href="/static/css/servicios.css">
 {% endblock %}
 
 {% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Vehiculos</h1>
+        <p class="servicios-subtitle">Gestiona los vehiculos registrados.</p>
+    </div>
 
-<!-- ==================================================
-     CABECERA DEL MÓDULO
-================================================== -->
-<div class="vehiculos-header">
-    <h1>Vehículos</h1>
-
-    <!-- Botón para crear un nuevo vehículo -->
     <a href="/vehiculos/crear" class="btn-primary">
-        <i class="fa-solid fa-plus"></i> Nuevo vehículo
+        <i class="fa-solid fa-plus"></i> Nuevo vehiculo
     </a>
 </div>
 
-<!-- ==================================================
-     CONTENEDOR PRINCIPAL
-================================================== -->
-<div class="vehiculos-card">
-
-    <!-- ==================================================
-         TABLA DE VEHÍCULOS
-    ================================================== -->
-    <table class="vehiculos-table">
-
-        <!-- ENCABEZADOS -->
+<div class="servicios-card">
+    <table class="servicios-table">
         <thead>
             <tr>
                 <th>Placa</th>
@@ -58,84 +33,48 @@ CSS ESPECÍFICO DEL MÓDULO
                 <th class="acciones">Acciones</th>
             </tr>
         </thead>
-
-        <!-- CUERPO -->
         <tbody>
-
             {% for v in vehiculos %}
             <tr class="vehiculo-row">
-
-                <!-- Placa -->
-                <td class="placa">{{ v.placa }}</td>
-
+                <td class="servicio-nombre">{{ v.placa }}</td>
                 <td>{{ v.marca }}</td>
                 <td>{{ v.modelo }}</td>
                 <td>{{ v.anio or "-" }}</td>
                 <td>{{ v.color or "-" }}</td>
-
-                <!-- Cliente -->
-                <td>
-                    {{ v.cliente.nombre if v.cliente else "Sin cliente" }}
-                </td>
-
-                <!-- ACCIONES -->
+                <td>{{ v.cliente.nombre if v.cliente else "Sin cliente" }}</td>
                 <td class="acciones">
-
-                    <!-- EDITAR -->
-                    <a href="/vehiculos/{{ v.id }}/editar" class="btn-icon btn-edit" title="Editar vehículo">
+                    <a href="/vehiculos/{{ v.id }}/editar" class="btn-icon btn-edit" title="Editar vehiculo">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </a>
-
-                    <!-- ELIMINAR -->
-                    <form method="post" action="/vehiculos/{{ v.id }}/eliminar" class="form-delete"
+                    <form method="post" action="/vehiculos/{{ v.id }}/eliminar" class="form-delete inline-form"
                         data-placa="{{ v.placa }}">
-
-                        <button type="submit" class="btn-icon btn-delete" title="Eliminar vehículo">
+                        <button type="submit" class="btn-icon btn-delete" title="Eliminar vehiculo">
                             <i class="fa-solid fa-trash"></i>
                         </button>
-
                     </form>
-
                 </td>
             </tr>
-
             {% else %}
             <tr>
-                <td colspan="7" class="empty">
-                    No hay vehículos registrados
-                </td>
+                <td colspan="7" class="servicios-empty">No hay vehiculos registrados</td>
             </tr>
             {% endfor %}
-
         </tbody>
     </table>
-
 </div>
-
 {% endblock %}
 
-{# ------------------------------------------------------
-JS DEL MÓDULO
------------------------------------------------------- #}
 {% block extra_js %}
-
-<!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 <script src="/static/js/vehiculos.js"></script>
-
 <script>
-    /* ==========================================
-       SWEET ALERT DE ÉXITO (CREATE / UPDATE / DELETE)
-    ========================================== */
-
     const params = new URLSearchParams(window.location.search);
 
     if (params.has("created")) {
         Swal.fire({
             icon: "success",
-            title: "Vehículo registrado",
-            text: "El vehículo fue creado correctamente",
+            title: "Vehiculo registrado",
+            text: "El vehiculo fue creado correctamente",
             timer: 2000,
             showConfirmButton: false
         });
@@ -144,7 +83,7 @@ JS DEL MÓDULO
     if (params.has("updated")) {
         Swal.fire({
             icon: "success",
-            title: "Vehículo actualizado",
+            title: "Vehiculo actualizado",
             text: "Los cambios se guardaron correctamente",
             timer: 2000,
             showConfirmButton: false
@@ -154,12 +93,11 @@ JS DEL MÓDULO
     if (params.has("deleted")) {
         Swal.fire({
             icon: "success",
-            title: "Vehículo eliminado",
-            text: "El vehículo fue eliminado correctamente",
+            title: "Vehiculo eliminado",
+            text: "El vehiculo fue eliminado correctamente",
             timer: 2000,
             showConfirmButton: false
         });
     }
 </script>
-
 {% endblock %}

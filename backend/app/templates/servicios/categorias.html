@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Categorias de servicio | MedinAutos{% endblock %}
+{% block section %}Servicios{% endblock %}
+{% block page_title %}Categorias{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Categorias de servicio</h1>
+        <p class="servicios-subtitle">Crea y administra las categorias usadas en los servicios.</p>
+    </div>
+
+    <a href="/servicios" class="btn-secondary">
+        Volver a servicios
+    </a>
+</div>
+
+<div class="categorias-layout">
+    <div class="categorias-card">
+        <table class="categorias-table">
+            <thead>
+                <tr>
+                    <th>Categoria</th>
+                    <th>Descripcion</th>
+                    <th>Estado</th>
+                    <th class="acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="categorias-body">
+                <tr>
+                    <td colspan="4" class="categorias-empty">Cargando categorias...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="categoria-form-card">
+        <h2 data-role="form-title">Nueva categoria</h2>
+        <form id="form-categoria" data-mode="create">
+            <div class="form-group">
+                <label>Nombre *</label>
+                <input type="text" name="nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label>Descripcion</label>
+                <textarea name="descripcion" rows="4"></textarea>
+            </div>
+
+            <div class="form-group form-group-switch">
+                <label class="switch-label">Activa</label>
+                <label class="switch">
+                    <input type="checkbox" name="activo" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Guardar categoria</button>
+                <button type="button" class="btn-secondary" id="btn-cancelar">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/categorias_servicio.js"></script>
+{% endblock %}

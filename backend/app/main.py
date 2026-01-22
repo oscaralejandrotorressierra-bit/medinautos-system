@@ -17,9 +17,15 @@ from backend.app.core.database import engine
 from backend.app.models.usuario import Usuario
 from backend.app.models.cliente import Cliente
 from backend.app.models.vehiculo import Vehiculo
+from backend.app.models.servicio import Servicio
+from backend.app.models.categoria_servicio import CategoriaServicio
+from backend.app.models.orden_trabajo import OrdenTrabajo
+from backend.app.models.detalle_orden import DetalleOrden
+
 from sqlalchemy.orm import Session
 from backend.app.core.database import SessionLocal
 from backend.app.core.security import encriptar_password
+
 
 
 
@@ -30,6 +36,11 @@ from backend.app.routes import clientes
 from backend.app.routes import frontend  # LOGIN + DASHBOARD + LOGOUT
 from backend.app.routes import dashboard
 from backend.app.routes import vehiculos
+from backend.app.routes import servicios
+from backend.app.routes import categorias_servicio
+from backend.app.routes import ordenes_trabajo
+from backend.app.routes import detalle_orden
+
 
 
 def crear_admin_si_no_existe():
@@ -73,6 +84,11 @@ app = FastAPI(
 Usuario.metadata.create_all(bind=engine)
 Cliente.metadata.create_all(bind=engine)
 Vehiculo.metadata.create_all(bind=engine)
+Servicio.metadata.create_all(bind=engine)
+CategoriaServicio.metadata.create_all(bind=engine)
+OrdenTrabajo.metadata.create_all(bind=engine)
+DetalleOrden.metadata.create_all(bind=engine)
+
 
 crear_admin_si_no_existe()
 
@@ -105,7 +121,13 @@ def home(request: Request):
 app.include_router(frontend.router)   # LOGIN / DASHBOARD / LOGOUT
 app.include_router(clientes.router)   # CRUD CLIENTES
 app.include_router(dashboard.router)  # DATOS DEL DASHBOARD
-app.include_router(vehiculos.router)
+app.include_router(vehiculos.router)  # CRUD VEHICULOS
+app.include_router(servicios.router)  
+app.include_router(categorias_servicio.router)
+app.include_router(ordenes_trabajo.router)
+app.include_router(detalle_orden.router)
+
+
 
 
 # ============================================

@@ -1,118 +1,55 @@
 {% extends "base.html" %}
 
-{# ------------------------------------------------------
-TÍTULO DE LA PESTAÑA
------------------------------------------------------- #}
-{% block title %}Editar Vehículo | MedinAutos{% endblock %}
+{% block title %}Editar Vehiculo | MedinAutos{% endblock %}
+{% block section %}Vehiculos{% endblock %}
+{% block page_title %}Editar Vehiculo{% endblock %}
 
-{# ------------------------------------------------------
-CSS DEL MÓDULO
------------------------------------------------------- #}
 {% block extra_css %}
-<link rel="stylesheet" href="/static/css/vehiculos.css">
+<link rel="stylesheet" href="/static/css/servicios.css">
 {% endblock %}
 
 {% block content %}
-
-<!-- ==================================================
-     CABECERA
-================================================== -->
-<div class="vehiculos-header">
-    <h1>Editar vehículo</h1>
-    <p class="subtitle">
-        Modifica la información del vehículo registrado
-    </p>
-</div>
-
-<!-- ==================================================
-     TARJETA CONTENEDORA
-================================================== -->
-<div class="vehiculos-card">
-
-    <!-- FORMULARIO -->
-    <form method="post" class="vehiculos-form">
-
-        <!-- =========================
-             CLIENTE
-        ========================== -->
-        <div class="form-group">
-            <label>
-                <i class="fa-solid fa-user"></i> Cliente *
-            </label>
-
-            <div class="select-wrapper">
-                <select name="cliente_id" required>
-
-                    {% for cliente in clientes %}
-                    <option value="{{ cliente.id }}" {% if cliente.id==vehiculo.cliente_id %}selected{% endif %}>
-                        {{ cliente.nombre }} — {{ cliente.documento }}
-                    </option>
-                    {% endfor %}
-
-                </select>
-
-                <span class="select-icon">
-                    <i class="fa-solid fa-chevron-down"></i>
-                </span>
-            </div>
+<form method="post" class="form-card servicio-form">
+    <div class="form-grid">
+        <div class="form-group form-group-full">
+            <label>Cliente *</label>
+            <select name="cliente_id" required>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id }}" {% if cliente.id==vehiculo.cliente_id %}selected{% endif %}>
+                    {{ cliente.nombre }} - {{ cliente.documento }}
+                </option>
+                {% endfor %}
+            </select>
         </div>
 
-        <!-- =========================
-             PLACA
-        ========================== -->
         <div class="form-group">
-            <label>
-                <i class="fa-solid fa-car"></i> Placa *
-            </label>
+            <label>Placa *</label>
             <input type="text" name="placa" value="{{ vehiculo.placa }}" required style="text-transform: uppercase;">
         </div>
 
-        <!-- =========================
-             MARCA
-        ========================== -->
         <div class="form-group">
-            <label>
-                <i class="fa-solid fa-industry"></i> Marca *
-            </label>
+            <label>Marca *</label>
             <input type="text" name="marca" value="{{ vehiculo.marca }}" required>
         </div>
 
-        <!-- =========================
-             MODELO
-        ========================== -->
         <div class="form-group">
-            <label>
-                <i class="fa-solid fa-tag"></i> Modelo *
-            </label>
+            <label>Modelo *</label>
             <input type="text" name="modelo" value="{{ vehiculo.modelo }}" required>
         </div>
 
-        <!-- =========================
-             AÑO
-        ========================== -->
         <div class="form-group">
-            <label>
-                <i class="fa-solid fa-calendar"></i> Año
-            </label>
+            <label>Año</label>
             <input type="number" name="anio" value="{{ vehiculo.anio }}">
         </div>
 
-        <!-- =========================
-             COLOR
-        ========================== -->
         <div class="form-group">
-            <label>
-                <i class="fa-solid fa-palette"></i> Color
-            </label>
+            <label>Color</label>
             <input type="text" name="color" value="{{ vehiculo.color }}">
         </div>
 
-        <!-- =========================
-             ACCIONES
-        ========================== -->
         <div class="form-actions">
             <a href="/vehiculos" class="btn-secondary">
-                <i class="fa-solid fa-arrow-left"></i> Cancelar
+                Cancelar
             </a>
 
             <button type="submit" class="btn-primary">
@@ -120,35 +57,23 @@ CSS DEL MÓDULO
                 Guardar cambios
             </button>
         </div>
-
-    </form>
-
-</div>
-
+    </div>
+</form>
 {% endblock %}
 
-{# ------------------------------------------------------
-SWEETALERT DE ÉXITO (EDITAR)
------------------------------------------------------- #}
 {% block extra_js %}
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    /* ==========================================
-       ALERTA DE ÉXITO AL EDITAR VEHÍCULO
-    ========================================== */
-
     const params = new URLSearchParams(window.location.search);
 
     if (params.has("updated")) {
         Swal.fire({
             icon: "success",
-            title: "Vehículo actualizado",
+            title: "Vehiculo actualizado",
             text: "Los cambios se guardaron correctamente",
             confirmButtonColor: "#d81822"
         });
     }
 </script>
-
 {% endblock %}

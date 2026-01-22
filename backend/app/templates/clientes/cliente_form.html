@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-{# =========================================================
-TÍTULO DINÁMICO DE LA PÁGINA
-Cambia según si estamos creando o editando
-========================================================= #}
 {% block title %}
 {% if modo_edicion %}
 Editar Cliente | MedinAutos
@@ -12,105 +8,69 @@ Nuevo Cliente | MedinAutos
 {% endif %}
 {% endblock %}
 
+{% block section %}Clientes{% endblock %}
+{% block page_title %}
+{% if modo_edicion %}
+Editar Cliente
+{% else %}
+Nuevo Cliente
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
 {% block content %}
-<section class="page">
+<form method="post"
+    action="{% if modo_edicion %}/clientes/{{ cliente.id }}/editar{% else %}/clientes/nuevo{% endif %}"
+    class="form-card servicio-form">
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" required
+                value="{% if modo_edicion %}{{ cliente.nombre }}{% else %}{{ nombre or '' }}{% endif %}">
+        </div>
 
-    <!-- ===============================
-         CARD PRINCIPAL
-    =============================== -->
-    <div class="card">
+        <div class="form-group">
+            <label for="documento">Documento</label>
+            <input type="text" id="documento" name="documento" required
+                value="{% if modo_edicion %}{{ cliente.documento }}{% else %}{{ documento or '' }}{% endif %}">
+        </div>
 
-        {# Título dinámico del formulario #}
-        <h2>
-            {% if modo_edicion %}
-            Editar Cliente
-            {% else %}
-            Nuevo Cliente
-            {% endif %}
-        </h2>
+        <div class="form-group">
+            <label for="telefono">Telefono</label>
+            <input type="text" id="telefono" name="telefono"
+                value="{% if modo_edicion %}{{ cliente.telefono }}{% else %}{{ telefono or '' }}{% endif %}">
+        </div>
 
-        <!-- ===============================
-             FORMULARIO
-             - En crear: POST /clientes/nuevo
-             - En editar: POST /clientes/{id}/editar
-        =============================== -->
-        <form method="post"
-            action="{% if modo_edicion %}/clientes/{{ cliente.id }}/editar{% else %}/clientes/nuevo{% endif %}"
-            class="form">
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email"
+                value="{% if modo_edicion %}{{ cliente.email }}{% else %}{{ email or '' }}{% endif %}">
+        </div>
 
-            <!-- ===============================
-                 NOMBRE
-            =============================== -->
-            <div class="form-group">
-                <label for="nombre">Nombre</label>
-                <input type="text" id="nombre" name="nombre" required
-                    value="{% if modo_edicion %}{{ cliente.nombre }}{% else %}{{ nombre or '' }}{% endif %}">
-            </div>
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i>
+                {% if modo_edicion %}
+                Actualizar cliente
+                {% else %}
+                Guardar cliente
+                {% endif %}
+            </button>
 
-            <!-- ===============================
-                 DOCUMENTO
-            =============================== -->
-            <div class="form-group">
-                <label for="documento">Documento</label>
-                <input type="text" id="documento" name="documento" required
-                    value="{% if modo_edicion %}{{ cliente.documento }}{% else %}{{ documento or '' }}{% endif %}">
-            </div>
-
-            <!-- ===============================
-                 TELÉFONO
-            =============================== -->
-            <div class="form-group">
-                <label for="telefono">Teléfono</label>
-                <input type="text" id="telefono" name="telefono"
-                    value="{% if modo_edicion %}{{ cliente.telefono }}{% else %}{{ telefono or '' }}{% endif %}">
-            </div>
-
-            <!-- ===============================
-                 EMAIL
-            =============================== -->
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email"
-                    value="{% if modo_edicion %}{{ cliente.email }}{% else %}{{ email or '' }}{% endif %}">
-            </div>
-
-            <!-- ===============================
-                 ACCIONES DEL FORMULARIO
-            =============================== -->
-            <div class="form-actions">
-
-                <!-- BOTÓN GUARDAR / ACTUALIZAR -->
-                <button type="submit" class="btn-primary">
-                    <i class="fa-solid fa-floppy-disk"></i>
-                    {% if modo_edicion %}
-                    Actualizar Cliente
-                    {% else %}
-                    Guardar Cliente
-                    {% endif %}
-                </button>
-
-                <!-- BOTÓN CANCELAR -->
-                <a href="/clientes/" class="btn-secondary">
-                    Cancelar
-                </a>
-            </div>
-
-        </form>
+            <a href="/clientes/" class="btn-secondary">
+                Cancelar
+            </a>
+        </div>
     </div>
-
-</section>
+</form>
 {% endblock %}
 
 {% block extra_js %}
-<!-- ===============================
-     SWEETALERT2
-=============================== -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-{# =========================================================
-ALERTA ERROR DOCUMENTO DUPLICADO
-Se usa tanto en crear como en editar
-========================================================= #}
 {% if swal_error %}
 <script>
     Swal.fire({
@@ -118,11 +78,8 @@ Se usa tanto en crear como en editar
         title: "Documento duplicado",
         text: "{{ swal_error }}",
         confirmButtonText: "Entendido",
-        confirmButtonColor: "#d81822",
-        background: "#f0eaea",
-        color: "#302e2f"
+        confirmButtonColor: "#d81822"
     }).then(() => {
-        // Enfoca automáticamente el input documento
         const input = document.getElementById("documento");
         if (input) {
             input.focus();

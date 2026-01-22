@@ -1,34 +1,40 @@
 {% extends "base.html" %}
 
 {% block title %}Dashboard | MedinAutos{% endblock %}
+{% block section %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="/static/css/dashboard.css">
+<link rel="stylesheet" href="/static/css/servicios.css">
 {% endblock %}
 
 {% block content %}
-
-<h1 class="dashboard-title">Dashboard</h1>
-
-<div class="cards">
-
-    <div class="card">
-        <h3>Total Clientes</h3>
-        <span id="total-clientes">0</span>
+<div class="servicios-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="servicios-subtitle">Resumen general del sistema.</p>
     </div>
-
-    <div class="card">
-        <h3>Total Vehículos</h3>
-        <span id="total-vehiculos">0</span>
-    </div>
-
-    <div class="card">
-        <h3>Estado del sistema</h3>
-        <span class="status-ok" id="estado-sistema">Operativo</span>
-    </div>
-
 </div>
 
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        <div class="card-label">Total clientes</div>
+        <div class="card-value" id="total-clientes">0</div>
+        <div class="card-meta">Clientes registrados</div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="card-label">Total vehiculos</div>
+        <div class="card-value" id="total-vehiculos">0</div>
+        <div class="card-meta">Flota activa</div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="card-label">Estado del sistema</div>
+        <div class="card-status status-ok" id="estado-sistema">Operativo</div>
+        <div class="card-meta">Servicios y reportes</div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
