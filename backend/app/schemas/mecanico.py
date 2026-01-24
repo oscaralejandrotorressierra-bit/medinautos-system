@@ -1,10 +1,11 @@
-﻿"""
+"""
 Schema de validacion para Mecanicos
 """
 
-from pydantic import BaseModel, Field
+from datetime import date, datetime
 from typing import Optional
-from datetime import datetime, date
+
+from pydantic import BaseModel, Field
 
 
 class MecanicoBaseSchema(BaseModel):
@@ -14,7 +15,14 @@ class MecanicoBaseSchema(BaseModel):
     telefono: Optional[str] = Field(None, max_length=20)
     email: Optional[str] = Field(None, max_length=100)
     especialidad: Optional[str] = Field(None, max_length=80)
+    eps: Optional[str] = Field(None, max_length=100)
+    tipo_sangre: Optional[str] = Field(None, max_length=10)
+    fecha_nacimiento: Optional[date] = None
+    contacto_emergencia_nombre: Optional[str] = Field(None, max_length=120)
+    contacto_emergencia_parentesco: Optional[str] = Field(None, max_length=60)
+    contacto_emergencia_telefono: Optional[str] = Field(None, max_length=20)
     fecha_ingreso: Optional[date] = None
+    porcentaje_base: Optional[float] = Field(0.0, ge=0, le=100)
 
 
 class MecanicoCreateSchema(MecanicoBaseSchema):
@@ -28,7 +36,14 @@ class MecanicoUpdateSchema(BaseModel):
     telefono: Optional[str] = Field(None, max_length=20)
     email: Optional[str] = Field(None, max_length=100)
     especialidad: Optional[str] = Field(None, max_length=80)
+    eps: Optional[str] = Field(None, max_length=100)
+    tipo_sangre: Optional[str] = Field(None, max_length=10)
+    fecha_nacimiento: Optional[date] = None
+    contacto_emergencia_nombre: Optional[str] = Field(None, max_length=120)
+    contacto_emergencia_parentesco: Optional[str] = Field(None, max_length=60)
+    contacto_emergencia_telefono: Optional[str] = Field(None, max_length=20)
     fecha_ingreso: Optional[date] = None
+    porcentaje_base: Optional[float] = Field(None, ge=0, le=100)
     activo: Optional[bool] = None
 
 
@@ -47,7 +62,14 @@ class MecanicoResumenSchema(BaseModel):
     apellidos: str
     documento: str
     especialidad: Optional[str] = None
+    eps: Optional[str] = None
+    tipo_sangre: Optional[str] = None
+    fecha_nacimiento: Optional[date] = None
+    contacto_emergencia_nombre: Optional[str] = None
+    contacto_emergencia_parentesco: Optional[str] = None
+    contacto_emergencia_telefono: Optional[str] = None
     activo: bool
+    porcentaje_base: float
 
     class Config:
         from_attributes = True
@@ -65,12 +87,15 @@ class OrdenResumenSchema(BaseModel):
 
 class AsignacionMecanicoCreateSchema(BaseModel):
     observaciones: Optional[str] = Field(None, max_length=255)
+    porcentaje: Optional[float] = Field(None, ge=0, le=100)
 
 
 class AsignacionResponseSchema(BaseModel):
     id: int
     fecha_asignacion: datetime
     observaciones: Optional[str] = None
+    porcentaje: float
+    monto: float
     orden: OrdenResumenSchema
     mecanico: MecanicoResumenSchema
 
@@ -82,6 +107,8 @@ class OrdenAsignacionResponseSchema(BaseModel):
     id: int
     fecha_asignacion: datetime
     observaciones: Optional[str] = None
+    porcentaje: float
+    monto: float
     orden: OrdenResumenSchema
 
     class Config:
@@ -92,6 +119,8 @@ class MecanicoAsignacionResponseSchema(BaseModel):
     id: int
     fecha_asignacion: datetime
     observaciones: Optional[str] = None
+    porcentaje: float
+    monto: float
     mecanico: MecanicoResumenSchema
 
     class Config:

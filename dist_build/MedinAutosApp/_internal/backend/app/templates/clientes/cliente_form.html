@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if modo_edicion %}
+Editar Cliente | MedinAutos
+{% else %}
+Nuevo Cliente | MedinAutos
+{% endif %}
+{% endblock %}
+
+{% block section %}Clientes{% endblock %}
+{% block page_title %}
+{% if modo_edicion %}
+Editar Cliente
+{% else %}
+Nuevo Cliente
+{% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<form method="post"
+    action="{% if modo_edicion %}/clientes/{{ cliente.id }}/editar{% else %}/clientes/nuevo{% endif %}"
+    class="form-card servicio-form">
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" required
+                value="{% if modo_edicion %}{{ cliente.nombre }}{% else %}{{ nombre or '' }}{% endif %}">
+        </div>
+
+        <div class="form-group">
+            <label for="documento">Documento</label>
+            <input type="text" id="documento" name="documento" required
+                value="{% if modo_edicion %}{{ cliente.documento }}{% else %}{{ documento or '' }}{% endif %}">
+        </div>
+
+        <div class="form-group">
+            <label for="telefono">Telefono</label>
+            <input type="text" id="telefono" name="telefono"
+                value="{% if modo_edicion %}{{ cliente.telefono }}{% else %}{{ telefono or '' }}{% endif %}">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email"
+                value="{% if modo_edicion %}{{ cliente.email }}{% else %}{{ email or '' }}{% endif %}">
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i>
+                {% if modo_edicion %}
+                Actualizar cliente
+                {% else %}
+                Guardar cliente
+                {% endif %}
+            </button>
+
+            <a href="/clientes/" class="btn-secondary">
+                Cancelar
+            </a>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% if swal_error %}
+<script>
+    Swal.fire({
+        icon: "error",
+        title: "Documento duplicado",
+        text: "{{ swal_error }}",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#d81822"
+    }).then(() => {
+        const input = document.getElementById("documento");
+        if (input) {
+            input.focus();
+            input.select();
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}

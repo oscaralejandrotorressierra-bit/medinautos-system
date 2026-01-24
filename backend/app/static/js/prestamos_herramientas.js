@@ -52,7 +52,7 @@ async function cargarMecanicosSelect(select) {
     try {
         const response = await fetch(`${API_BASE}/mecanicos/`);
         if (!response.ok) {
-            throw new Error("No se pudieron cargar los mecanicos.");
+            throw new Error("No se pudieron cargar los tecnicos.");
         }
 
         const mecanicos = await response.json();
@@ -81,7 +81,7 @@ function prepararFormulario(formulario, tabla) {
             Swal.fire({
                 icon: "warning",
                 title: "Datos invalidos",
-                text: "Selecciona herramienta y mecanico."
+                text: "Selecciona herramienta y tecnico."
             });
             return;
         }
@@ -166,7 +166,7 @@ function renderPrestamos(tabla, prestamos, herramientasMap, mecanicosMap) {
 
     tabla.innerHTML = prestamos.map((prestamo) => {
         const herramienta = herramientasMap[prestamo.herramienta_id] || "Herramienta";
-        const mecanico = mecanicosMap[prestamo.mecanico_id] || "Mecanico";
+        const mecanico = mecanicosMap[prestamo.mecanico_id] || "Tecnico";
         const prestamoFecha = formatearFecha(prestamo.fecha_prestamo);
         const devolucionFecha = prestamo.fecha_devolucion
             ? formatearFecha(prestamo.fecha_devolucion)
@@ -254,7 +254,8 @@ function formatearFecha(valor) {
         month: "2-digit",
         day: "2-digit",
         hour: "2-digit",
-        minute: "2-digit"
+        minute: "2-digit",
+        hour12: true
     });
 }
 

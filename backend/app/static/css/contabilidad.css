@@ -1,0 +1,278 @@
+/* =====================================================
+   CONTABILIDAD - MEDINAUTOS
+===================================================== */
+
+.contabilidad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 28px;
+    gap: 16px;
+}
+
+.contabilidad-subtitle {
+    color: #6b7280;
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.contabilidad-section {
+    background: #f9fafb;
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 24px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    gap: 16px;
+}
+
+.section-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.section-help {
+    color: #6b7280;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.status-pill {
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.status-pill.is-open {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.section-body {
+    display: grid;
+    gap: 16px;
+}
+
+.two-columns {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.panel {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 18px;
+    border: 1px solid #e5e7eb;
+    display: grid;
+    gap: 14px;
+}
+
+.panel-forms {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.panel-highlight {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.panel-highlight span {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.panel-highlight strong {
+    display: block;
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 4px;
+    color: #111827;
+}
+
+.alert {
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.alert-info {
+    background: #eef2ff;
+    color: #1e40af;
+}
+
+.panel-form {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    display: grid;
+    gap: 12px;
+}
+
+.panel-form h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-row label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.form-help {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+.form-row input,
+.form-row select {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    background: #f9fafb;
+}
+
+.currency-input {
+    text-align: right;
+    letter-spacing: 0.3px;
+}
+
+.select-search {
+    position: relative;
+    display: grid;
+    gap: 8px;
+    width: 100%;
+}
+
+.select-search select {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    height: 0;
+    width: 0;
+}
+
+.select-input {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    background: #f9fafb;
+    width: 100%;
+    min-width: 0;
+}
+
+.select-input:focus {
+    outline: none;
+    border-color: #d81822;
+    box-shadow: 0 0 0 3px rgba(216, 24, 34, 0.12);
+}
+
+.select-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
+    z-index: 20;
+}
+
+.select-menu.is-open {
+    display: block;
+}
+
+.select-option {
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #111827;
+    cursor: pointer;
+}
+
+.select-option:hover {
+    background: #f3f4f6;
+}
+
+.select-option.is-placeholder {
+    color: #9ca3af;
+}
+
+.form-row input:focus,
+.form-row select:focus {
+    outline: none;
+    border-color: #d81822;
+    box-shadow: 0 0 0 3px rgba(216, 24, 34, 0.12);
+}
+
+.btn-secondary {
+    background: #e5e7eb;
+    color: #111827;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.table-wrapper {
+    margin-top: 14px;
+    overflow-x: auto;
+}
+
+.table-empty {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+}
+
+@media (max-width: 900px) {
+    .contabilidad-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .panel-forms {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Vehiculos | MedinAutos{% endblock %}
+{% block section %}Vehiculos{% endblock %}
+{% block page_title %}Vehiculos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Vehiculos</h1>
+        <p class="servicios-subtitle">Gestiona los vehiculos registrados.</p>
+    </div>
+
+    <a href="/vehiculos/crear" class="btn-primary">
+        <i class="fa-solid fa-plus"></i> Nuevo vehiculo
+    </a>
+</div>
+
+<div class="servicios-card">
+    <table class="servicios-table">
+        <thead>
+            <tr>
+                <th>Placa</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>Año</th>
+                <th>Color</th>
+                <th>Cliente</th>
+                <th class="acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in vehiculos %}
+            <tr class="vehiculo-row">
+                <td class="servicio-nombre">{{ v.placa }}</td>
+                <td>{{ v.marca }}</td>
+                <td>{{ v.modelo }}</td>
+                <td>{{ v.anio or "-" }}</td>
+                <td>{{ v.color or "-" }}</td>
+                <td>{{ v.cliente.nombre if v.cliente else "Sin cliente" }}</td>
+                <td class="acciones">
+                    <a href="/vehiculos/{{ v.id }}/editar" class="btn-icon btn-edit" title="Editar vehiculo">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                    <form method="post" action="/vehiculos/{{ v.id }}/eliminar" class="form-delete inline-form"
+                        data-placa="{{ v.placa }}">
+                        <button type="submit" class="btn-icon btn-delete" title="Eliminar vehiculo">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="servicios-empty">No hay vehiculos registrados</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/vehiculos.js"></script>
+<script>
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has("created")) {
+        Swal.fire({
+            icon: "success",
+            title: "Vehiculo registrado",
+            text: "El vehiculo fue creado correctamente",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    if (params.has("updated")) {
+        Swal.fire({
+            icon: "success",
+            title: "Vehiculo actualizado",
+            text: "Los cambios se guardaron correctamente",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+
+    if (params.has("deleted")) {
+        Swal.fire({
+            icon: "success",
+            title: "Vehiculo eliminado",
+            text: "El vehiculo fue eliminado correctamente",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+</script>
+{% endblock %}

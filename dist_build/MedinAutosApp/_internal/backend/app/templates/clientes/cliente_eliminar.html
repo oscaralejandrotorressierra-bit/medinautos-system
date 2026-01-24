@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Eliminar Cliente | MedinAutos{% endblock %}
+
+{% block content %}
+<section class="page">
+
+    <div class="card" style="max-width: 480px; margin: auto; text-align: center;">
+        <h2>¿Eliminar cliente?</h2>
+
+        <p style="margin: 18px 0;">
+            Estás a punto de eliminar el siguiente cliente:
+        </p>
+
+        <strong>{{ cliente.nombre }}</strong>
+        <p>{{ cliente.documento }}</p>
+
+        <form method="post" style="margin-top: 24px;">
+            <div class="form-actions" style="justify-content: center;">
+                <button type="submit" class="btn-primary">
+                    Sí, eliminar
+                </button>
+
+                <a href="/clientes/" class="btn-secondary">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

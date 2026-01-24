@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Herramientas | MedinAutos{% endblock %}
+{% block section %}Herramientas{% endblock %}
+{% block page_title %}Herramientas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Herramientas</h1>
+        <p class="servicios-subtitle">Gestiona las herramientas del taller.</p>
+    </div>
+
+    <div class="servicios-actions">
+        <a href="/herramientas/prestamos" class="btn-secondary">
+            <i class="fa-solid fa-user-clock"></i> Prestamos
+        </a>
+        <a href="/herramientas/nuevo" class="btn-primary">
+            <i class="fa-solid fa-plus"></i> Nueva herramienta
+        </a>
+    </div>
+</div>
+
+<div class="servicios-card">
+    <table class="servicios-table">
+        <thead>
+            <tr>
+                <th>Herramienta</th>
+                <th>Codigo</th>
+                <th>Ubicacion</th>
+                <th>Valor</th>
+                <th>Estado</th>
+                <th class="acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="herramientas-body">
+            <tr>
+                <td colspan="6" class="servicios-loading">Cargando herramientas...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/herramientas.js"></script>
+{% endblock %}

@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Mecanicos | MedinAutos{% endblock %}
-{% block section %}Mecanicos{% endblock %}
-{% block page_title %}Mecanicos{% endblock %}
+{% block title %}Tecnicos | MedinAutos{% endblock %}
+{% block section %}Tecnicos{% endblock %}
+{% block page_title %}Tecnicos{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="/static/css/servicios.css">
@@ -11,12 +11,12 @@
 {% block content %}
 <div class="servicios-header">
     <div>
-        <h1>Mecanicos</h1>
-        <p class="servicios-subtitle">Gestiona el equipo de mecanicos del taller.</p>
+        <h1>Tecnicos</h1>
+        <p class="servicios-subtitle">Gestiona el equipo de tecnicos del taller.</p>
     </div>
 
     <a href="/mecanicos/nuevo" class="btn-primary">
-        <i class="fa-solid fa-plus"></i> Nuevo mecanico
+        <i class="fa-solid fa-plus"></i> Nuevo tecnico
     </a>
 </div>
 
@@ -24,17 +24,23 @@
     <table class="servicios-table">
         <thead>
             <tr>
-                <th>Mecanico</th>
+                <th>Tecnico</th>
                 <th>Documento</th>
                 <th>Telefono</th>
+                <th>EPS</th>
+                <th>Tipo sangre</th>
+                <th>Contacto emergencia</th>
+                <th>Parentesco</th>
+                <th>Telefono emergencia</th>
                 <th>Especialidad</th>
+                <th>% Base</th>
                 <th>Estado</th>
                 <th class="acciones">Acciones</th>
             </tr>
         </thead>
         <tbody id="mecanicos-body">
             <tr>
-                <td colspan="6" class="servicios-loading">Cargando mecanicos...</td>
+                <td colspan="12" class="servicios-loading">Cargando tecnicos...</td>
             </tr>
         </tbody>
     </table>

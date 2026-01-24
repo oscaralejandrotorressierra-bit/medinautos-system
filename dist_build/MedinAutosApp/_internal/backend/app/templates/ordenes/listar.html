@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Ordenes | MedinAutos{% endblock %}
+{% block section %}Ordenes{% endblock %}
+{% block page_title %}Ordenes{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/ordenes.css">
+{% endblock %}
+
+{% block content %}
+<div class="ordenes-header">
+    <div>
+        <h1>Ordenes de trabajo</h1>
+        <p class="ordenes-subtitle">Controla el estado, totales y responsables de cada orden.</p>
+    </div>
+
+    <a href="/ordenes/nuevo" class="btn-primary">
+        <i class="fa-solid fa-plus"></i> Nueva orden
+    </a>
+</div>
+
+<div class="ordenes-kpi">
+    <div class="kpi-card">
+        <span>Ordenes abiertas</span>
+        <strong id="kpi-abiertas">0</strong>
+    </div>
+    <div class="kpi-card">
+        <span>En proceso</span>
+        <strong id="kpi-proceso">0</strong>
+    </div>
+    <div class="kpi-card">
+        <span>Cerradas</span>
+        <strong id="kpi-cerradas">0</strong>
+    </div>
+    <div class="kpi-card kpi-total">
+        <span>Total ordenes</span>
+        <strong id="kpi-total">0</strong>
+    </div>
+</div>
+
+<div class="ordenes-card">
+    <table class="ordenes-table">
+        <thead>
+            <tr>
+                <th>Orden</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Vehiculo</th>
+                <th>Estado</th>
+                <th>Total</th>
+                <th class="acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for orden in ordenes %}
+            <tr data-id="{{ orden.id }}">
+                <td class="orden-numero" data-estado="{{ orden.estado or 'abierta' }}">#{{ orden.id }}</td>
+                <td>{{ orden.fecha.strftime("%Y-%m-%d") if orden.fecha else "-" }}</td>
+                <td>{{ orden.cliente.nombre if orden.cliente else "-" }}</td>
+                <td>{{ orden.vehiculo.placa if orden.vehiculo else "-" }}</td>
+                <td>
+                    {% set estado = orden.estado or "abierta" %}
+                    {% if estado == "cerrada" %}
+                        {% set badge_class = "badge-estado badge-estado-cerrada" %}
+                        {% set estado_label = "Cerrada" %}
+                    {% elif estado == "en_proceso" %}
+                        {% set badge_class = "badge-estado badge-estado-proceso" %}
+                        {% set estado_label = "En proceso" %}
+                    {% elif estado == "cancelada" %}
+                        {% set badge_class = "badge-estado badge-estado-cancelada" %}
+                        {% set estado_label = "Cancelada" %}
+                    {% else %}
+                        {% set badge_class = "badge-estado badge-estado-abierta" %}
+                        {% set estado_label = "Abierta" %}
+                    {% endif %}
+                    <span class="badge {{ badge_class }}">{{ estado_label }}</span>
+                </td>
+                <td>${{ "{:,.0f}".format(orden.total or 0) }}</td>
+                <td class="acciones">
+                    <a href="/ordenes/{{ orden.id }}" class="btn-icon btn-edit" title="Ver orden">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                    <a href="/api/ordenes/{{ orden.id }}/pdf" target="_blank" class="btn-icon btn-pdf" title="Descargar PDF">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </a>
+                    <button type="button" class="btn-icon btn-delete btn-orden-delete" data-id="{{ orden.id }}"
+                        data-numero="{{ orden.id }}" title="Eliminar orden">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="servicios-empty">No hay ordenes registradas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/ordenes.js"></script>
+{% endblock %}

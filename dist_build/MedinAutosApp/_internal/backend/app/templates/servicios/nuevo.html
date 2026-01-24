@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Nuevo Servicio | MedinAutos{% endblock %}
+{% block section %}Servicios{% endblock %}
+{% block page_title %}Nuevo Servicio{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<form id="form-servicio" class="form-card servicio-form" data-mode="create">
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" name="nombre" required>
+        </div>
+
+        <div class="form-group">
+            <label>Categoria</label>
+            <select name="categoria" class="select-input" data-role="categoria-select">
+                <option value="">Sin categoria</option>
+            </select>
+        </div>
+
+        <div class="form-group form-group-full">
+            <label>Descripcion</label>
+            <textarea name="descripcion" rows="4"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Precio *</label>
+            <input type="number" name="precio" required min="1" step="0.01">
+            <small class="price-hint" data-role="precio-preview"></small>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                Guardar servicio
+            </button>
+
+            <a href="/servicios" class="btn-secondary">
+                Cancelar
+            </a>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/servicios.js"></script>
+{% endblock %}

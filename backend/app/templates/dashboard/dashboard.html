@@ -34,6 +34,70 @@
         <div class="card-status status-ok" id="estado-sistema">Operativo</div>
         <div class="card-meta">Servicios y reportes</div>
     </div>
+
+    <div class="dashboard-card">
+        <div class="card-label">Cumpleaños hoy</div>
+        <div class="card-value" id="cumple-hoy-total">0</div>
+        <div class="card-meta">Tecnicos en su día</div>
+    </div>
+</div>
+
+<div class="dashboard-analytics">
+    <div class="dashboard-card wide-card">
+        <div class="card-label">Ingresos de los ultimos 7 dias</div>
+        <div class="chart-legend">
+            <span class="legend-dot legend-ingresos"></span>Ingresos
+            <span class="legend-dot legend-egresos"></span>Egresos
+        </div>
+        <div class="chart-bars" id="ingresos-semana"></div>
+    </div>
+    <div class="dashboard-card">
+        <div class="card-label">Resumen mensual</div>
+        <div class="metric-grid" id="resumen-mensual"></div>
+    </div>
+    <div class="dashboard-card">
+        <div class="card-label">Ordenes por estado</div>
+        <div class="status-bars" id="ordenes-estado"></div>
+    </div>
+    <div class="dashboard-card">
+        <div class="card-label">Top servicios</div>
+        <div class="top-servicios" id="top-servicios"></div>
+    </div>
+    <div class="dashboard-card">
+        <div class="card-label">Alertas activas</div>
+        <div class="metric-grid" id="alertas-resumen"></div>
+    </div>
+</div>
+
+
+<div class="dashboard-birthdays">
+    <div class="dashboard-card wide-card">
+        <div class="card-label">Cumpleaños de tecnicos</div>
+        <div class="card-meta">Hoy y en los próximos 7 días.</div>
+        <div class="birthday-lists">
+            <div>
+                <h3>Hoy</h3>
+                <ul id="cumple-hoy">
+                    <li class="empty">Sin alertas.</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Próximos 7 días</h3>
+                <ul id="cumple-proximos">
+                    <li class="empty">Sin alertas.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="dashboard-alertas">
+    <div class="dashboard-card wide-card">
+        <div class="card-label">Alertas vencidas</div>
+        <div class="card-meta">Vehiculos con recomendaciones vencidas.</div>
+        <ul class="alertas-vencidas-list" id="alertas-vencidas">
+            <li class="empty">Sin alertas.</li>
+        </ul>
+    </div>
 </div>
 {% endblock %}
 

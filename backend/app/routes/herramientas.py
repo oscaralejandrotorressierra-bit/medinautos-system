@@ -65,7 +65,7 @@ def crear_prestamo(
 
     mecanico = db.query(Mecanico).filter(Mecanico.id == data.mecanico_id).first()
     if not mecanico:
-        raise HTTPException(status_code=404, detail="Mecanico no encontrado")
+        raise HTTPException(status_code=404, detail="Tecnico no encontrado")
 
     prestamo = PrestamoHerramienta(
         herramienta_id=data.herramienta_id,

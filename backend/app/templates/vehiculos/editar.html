@@ -33,13 +33,28 @@
         </div>
 
         <div class="form-group">
-            <label>Modelo *</label>
+            <label>Linea *</label>
             <input type="text" name="modelo" value="{{ vehiculo.modelo }}" required>
         </div>
 
         <div class="form-group">
-            <label>Año</label>
+            <label>Modelo</label>
             <input type="number" name="anio" value="{{ vehiculo.anio }}">
+        </div>
+
+        <div class="form-group">
+            <label>Cilindraje</label>
+            <input type="number" name="cilindraje" value="{{ vehiculo.cilindraje }}" min="0" step="1">
+        </div>
+
+        <div class="form-group">
+            <label>Clase</label>
+            <input type="text" name="clase" value="{{ vehiculo.clase }}">
+        </div>
+
+        <div class="form-group">
+            <label>Km actual</label>
+            <input type="number" name="km_actual" value="{{ vehiculo.km_actual }}" min="0" step="1">
         </div>
 
         <div class="form-group">
@@ -72,6 +87,15 @@
             icon: "success",
             title: "Vehiculo actualizado",
             text: "Los cambios se guardaron correctamente",
+            confirmButtonColor: "#d81822"
+        });
+    }
+
+    if (params.has("km_error")) {
+        Swal.fire({
+            icon: "error",
+            title: "Km invalido",
+            text: "El kilometraje no puede ser menor al ultimo registrado.",
             confirmButtonColor: "#d81822"
         });
     }

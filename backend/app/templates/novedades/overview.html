@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% block title %}Novedades | MedinAutos{% endblock %}
+{% block section %}Novedades{% endblock %}
+{% block page_title %}Novedades{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/novedades.css">
+{% endblock %}
+
+{% block content %}
+<div class="novedades-header">
+    <div>
+        <h1>Novedades y mantenimientos</h1>
+        <p class="novedades-subtitle">Alertas por kilometraje y tiempo para cada vehiculo.</p>
+    </div>
+</div>
+
+<section class="novedades-grid">
+    <div class="panel panel-form">
+        <div class="panel-title">
+            <h2>Reglas de recomendacion</h2>
+            <p>Configura intervalos por km y dias con tolerancias.</p>
+        </div>
+        <form method="post" action="/novedades/reglas" class="novedades-form">
+            <div class="form-row">
+                <label>Nombre *</label>
+                <input type="text" name="nombre" required placeholder="Cambio de aceite">
+            </div>
+            <div class="form-row">
+                <label>Descripcion</label>
+                <input type="text" name="descripcion" placeholder="Incluye filtro y revision general">
+            </div>
+            <div class="form-row form-row-inline">
+                <div>
+                    <label>Intervalo km</label>
+                    <input type="number" name="intervalo_km" min="0" step="1" placeholder="5000">
+                </div>
+                <div>
+                    <label>Intervalo dias</label>
+                    <input type="number" name="intervalo_dias" min="0" step="1" placeholder="180">
+                </div>
+            </div>
+            <div class="form-row form-row-inline">
+                <div>
+                    <label>Tolerancia km</label>
+                    <input type="number" name="tolerancia_km" min="0" step="1" value="200">
+                </div>
+                <div>
+                    <label>Tolerancia dias</label>
+                    <input type="number" name="tolerancia_dias" min="0" step="1" value="3">
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">Guardar regla</button>
+        </form>
+    </div>
+</section>
+
+<section class="novedades-section">
+    <div class="panel panel-list">
+        <div class="panel-title">
+            <h2>Reglas activas</h2>
+            <p>{{ reglas | length }} reglas configuradas.</p>
+        </div>
+        <div class="rule-filters">
+            <input type="text" id="regla-buscar" list="reglas-list" placeholder="Buscar regla...">
+            <datalist id="reglas-list">
+                {% for regla in reglas %}
+                <option value="{{ regla.nombre }}"></option>
+                {% endfor %}
+            </datalist>
+            <select id="regla-estado">
+                <option value="todas">Todas</option>
+                <option value="activas">Activas</option>
+                <option value="inactivas">Inactivas</option>
+            </select>
+        </div>
+        <div class="rule-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Regla</th>
+                        <th>Descripcion</th>
+                        <th>Intervalo km</th>
+                        <th>Intervalo dias</th>
+                        <th>Tolerancia</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for regla in reglas %}
+                    <tr class="rule-row" data-rule="{{ regla.id }}" data-nombre="{{ regla.nombre | lower }}" data-activo="{{ 1 if regla.activo else 0 }}">
+                        <td><strong>{{ regla.nombre }}</strong></td>
+                        <td>{{ regla.descripcion or "-" }}</td>
+                        <td>{{ regla.intervalo_km or "-" }}</td>
+                        <td>{{ regla.intervalo_dias or "-" }}</td>
+                        <td>{{ regla.tolerancia_km }} km / {{ regla.tolerancia_dias }} dias</td>
+                        <td>
+                            <span class="rule-status {{ "is-active" if regla.activo else "is-inactive" }}">
+                                {{ "Activa" if regla.activo else "Inactiva" }}
+                            </span>
+                        </td>
+                        <td class="acciones">
+                            <form method="post" action="/novedades/reglas/{{ regla.id }}/toggle">
+                                <button type="submit" class="btn-secondary">
+                                    {{ "Desactivar" if regla.activo else "Activar" }}
+                                </button>
+                            </form>
+                            <button type="button" class="btn-secondary btn-edit-rule" data-rule="{{ regla.id }}">
+                                Editar
+                            </button>
+                            <form method="post" action="/novedades/reglas/{{ regla.id }}/eliminar"
+                                onsubmit="return confirm('¿Eliminar esta regla?');">
+                                <button type="submit" class="btn-secondary btn-danger">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr class="rule-edit-row" data-rule="{{ regla.id }}">
+                        <td colspan="7">
+                            <form method="post" action="/novedades/reglas/{{ regla.id }}/editar" class="novedades-form">
+                                <div class="form-row">
+                                    <label>Nombre *</label>
+                                    <input type="text" name="nombre" required value="{{ regla.nombre }}">
+                                </div>
+                                <div class="form-row">
+                                    <label>Descripcion</label>
+                                    <input type="text" name="descripcion" value="{{ regla.descripcion or '' }}">
+                                </div>
+                                <div class="form-row form-row-inline">
+                                    <div>
+                                        <label>Intervalo km</label>
+                                        <input type="number" name="intervalo_km" min="0" step="1" value="{{ regla.intervalo_km or '' }}">
+                                    </div>
+                                    <div>
+                                        <label>Intervalo dias</label>
+                                        <input type="number" name="intervalo_dias" min="0" step="1" value="{{ regla.intervalo_dias or '' }}">
+                                    </div>
+                                </div>
+                                <div class="form-row form-row-inline">
+                                    <div>
+                                        <label>Tolerancia km</label>
+                                        <input type="number" name="tolerancia_km" min="0" step="1" value="{{ regla.tolerancia_km }}">
+                                    </div>
+                                    <div>
+                                        <label>Tolerancia dias</label>
+                                        <input type="number" name="tolerancia_dias" min="0" step="1" value="{{ regla.tolerancia_dias }}">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary">Guardar cambios</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="empty">No hay reglas registradas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="novedades-alertas">
+    <div class="panel-title">
+        <h2>Alertas por vehiculo</h2>
+        <p>Se marca como proximo cuando entra en tolerancia y vencido cuando supera el limite.</p>
+    </div>
+    <div class="vehiculo-alertas">
+        {% for vehiculo in alertas_vehiculos %}
+        <div class="vehiculo-card" id="vehiculo-{{ vehiculo.vehiculo_id }}" data-vehiculo="{{ vehiculo.vehiculo_id }}">
+            <button type="button" class="vehiculo-header">
+                <div>
+                    <strong>{{ vehiculo.placa }}</strong>
+                    <span>{{ vehiculo.marca }} {{ vehiculo.linea }}</span>
+                </div>
+                <div class="vehiculo-meta">
+                    <span>KM: {{ vehiculo.km_actual if vehiculo.km_actual is not none else "-" }}</span>
+                    <span>{{ vehiculo.alertas | length }} alertas</span>
+                </div>
+            </button>
+            <div class="vehiculo-alertas-list">
+                {% for alerta in vehiculo.alertas %}
+                <div class="alerta-card alerta-{{ alerta.estado }}">
+                    <div class="alerta-header">
+                        <div>
+                            <strong>{{ alerta.regla_nombre }}</strong>
+                            <span>{{ alerta.descripcion or "Sin descripcion" }}</span>
+                        </div>
+                        <span class="badge badge-{{ alerta.estado }}">{{ alerta.estado }}</span>
+                    </div>
+                    <div class="alerta-body">
+                        <div class="progress">
+                            <div class="progress-bar" style="width: {{ alerta.progreso }}%;"></div>
+                        </div>
+                        <div class="alerta-meta">
+                            <span>Progreso: {{ alerta.progreso }}%</span>
+                            <span>KM restantes: {{ alerta.km_restante if alerta.km_restante is not none else "-" }}</span>
+                            <span>Dias restantes: {{ alerta.dias_restante if alerta.dias_restante is not none else "-" }}</span>
+                        </div>
+                    </div>
+                    <form method="post" action="/novedades/{{ alerta.vehiculo_id }}/reglas/{{ alerta.regla_id }}/reset">
+                        <button type="submit" class="btn-secondary">Marcar realizado</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <p class="empty">No hay alertas disponibles.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const inputBuscar = document.getElementById("regla-buscar");
+    const selectEstado = document.getElementById("regla-estado");
+    const reglaCards = Array.from(document.querySelectorAll(".rule-row"));
+    const editButtons = Array.from(document.querySelectorAll(".btn-edit-rule"));
+    const editRows = Array.from(document.querySelectorAll(".rule-edit-row"));
+
+    function filtrarReglas() {
+        const texto = (inputBuscar?.value || "").trim().toLowerCase();
+        const estado = selectEstado?.value || "todas";
+
+        reglaCards.forEach((card) => {
+            const nombre = card.dataset.nombre || "";
+            const activo = card.dataset.activo === "1";
+            const coincideTexto = !texto || nombre.includes(texto);
+            const coincideEstado = estado === "todas"
+                || (estado === "activas" && activo)
+                || (estado === "inactivas" && !activo);
+            const mostrar = coincideTexto && coincideEstado;
+            card.style.display = mostrar ? "" : "none";
+            const reglaId = card.dataset.rule;
+            const editRow = document.querySelector(`.rule-edit-row[data-rule='${reglaId}']`);
+            if (editRow && !mostrar) {
+                editRow.classList.remove("is-open");
+            }
+        });
+    }
+
+    if (inputBuscar) {
+        inputBuscar.addEventListener("input", filtrarReglas);
+    }
+    if (selectEstado) {
+        selectEstado.addEventListener("change", filtrarReglas);
+    }
+
+    editButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const reglaId = btn.dataset.rule;
+            editRows.forEach((row) => {
+                if (row.dataset.rule === reglaId) {
+                    row.classList.toggle("is-open");
+                } else {
+                    row.classList.remove("is-open");
+                }
+            });
+        });
+    });
+
+    const vehiculoCards = Array.from(document.querySelectorAll(".vehiculo-card"));
+    vehiculoCards.forEach((card) => {
+        const header = card.querySelector(".vehiculo-header");
+        if (!header) {
+            return;
+        }
+        header.addEventListener("click", () => {
+            card.classList.toggle("is-open");
+        });
+    });
+
+    if (window.location.hash) {
+        const target = document.querySelector(window.location.hash);
+        if (target && target.classList.contains("vehiculo-card")) {
+            target.classList.add("is-open");
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }
+
+
+    if (params.has("rule_created")) {
+        Swal.fire({
+            icon: "success",
+            title: "Regla creada",
+            text: "La regla fue registrada correctamente.",
+            confirmButtonColor: "#d81822"
+        });
+    }
+
+    if (params.has("rule_reset")) {
+        Swal.fire({
+            icon: "success",
+            title: "Regla actualizada",
+            text: "La base fue reiniciada con el km actual.",
+            confirmButtonColor: "#d81822"
+        });
+    }
+
+    if (params.has("rule_error")) {
+        Swal.fire({
+            icon: "error",
+            title: "Datos incompletos",
+            text: "Debes indicar un intervalo por km o por dias.",
+            confirmButtonColor: "#d81822"
+        });
+    }
+
+    if (params.has("rule_duplicate")) {
+        Swal.fire({
+            icon: "warning",
+            title: "Regla duplicada",
+            text: "Ya existe una regla con ese nombre.",
+            confirmButtonColor: "#d81822"
+        });
+    }
+
+    if (params.has("rule_updated")) {
+        Swal.fire({
+            icon: "success",
+            title: "Regla actualizada",
+            text: "Los cambios se guardaron correctamente.",
+            confirmButtonColor: "#d81822"
+        });
+    }
+
+    if (params.has("rule_deleted")) {
+        Swal.fire({
+            icon: "success",
+            title: "Regla eliminada",
+            text: "La regla fue eliminada correctamente.",
+            confirmButtonColor: "#d81822"
+        });
+    }
+
+    if (params.has("rule_toggled")) {
+        Swal.fire({
+            icon: "success",
+            title: "Estado actualizado",
+            text: "El estado de la regla fue actualizado.",
+            confirmButtonColor: "#d81822"
+        });
+    }
+
+    if (params.has("rule_not_found")) {
+        Swal.fire({
+            icon: "error",
+            title: "Regla no encontrada",
+            text: "No se encontro la regla solicitada.",
+            confirmButtonColor: "#d81822"
+        });
+    }
+</script>
+{% endblock %}

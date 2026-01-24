@@ -17,7 +17,7 @@ para ser capturadas por SweetAlert en el frontend.
 # ===============================
 from fastapi import APIRouter, Request, Depends, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
+from backend.app.core.templates import templates
 
 
 
@@ -33,15 +33,17 @@ from sqlalchemy.exc import IntegrityError
 # BASE DE DATOS Y MODELOS
 # ===============================
 from backend.app.core.database import get_db
+from datetime import date
+
 from backend.app.models.vehiculo import Vehiculo
 from backend.app.models.cliente import Cliente
+from backend.app.models.recomendacion_regla import RecomendacionRegla
+from backend.app.models.vehiculo_recomendacion import VehiculoRecomendacion
 
 # ===============================
 # CONFIGURACIÓN DEL ROUTER
 # ===============================
 router = APIRouter()
-templates = Jinja2Templates(directory="backend/app/templates")
-
 # ======================================================
 # LISTAR VEHÍCULOS
 # ======================================================
@@ -96,6 +98,9 @@ def crear_vehiculo(
     modelo: str = Form(...),
     anio: int | None = Form(None),
     color: str | None = Form(None),
+    cilindraje: int | None = Form(None),
+    clase: str | None = Form(None),
+    km_actual: int | None = Form(None),
     db: Session = Depends(get_db)
 ):
     """
@@ -103,12 +108,21 @@ def crear_vehiculo(
     y lo asocia a un cliente existente.
     """
 
+    if km_actual is not None and km_actual < 0:
+        return RedirectResponse(
+            "/vehiculos/crear?km_error=1",
+            status_code=HTTP_303_SEE_OTHER
+        )
+
     vehiculo = Vehiculo(
         placa=placa.upper(),   # Normalizamos la placa
         marca=marca,
         modelo=modelo,
         anio=anio,
         color=color,
+        cilindraje=cilindraje,
+        clase=clase,
+        km_actual=km_actual,
         cliente_id=cliente_id
     )
 
@@ -123,6 +137,16 @@ def crear_vehiculo(
             "/vehiculos/crear?duplicate=1",
             status_code=HTTP_303_SEE_OTHER
         )
+
+    reglas = db.query(RecomendacionRegla).filter(RecomendacionRegla.activo == True).all()
+    for regla in reglas:
+        db.add(VehiculoRecomendacion(
+            vehiculo_id=vehiculo.id,
+            regla_id=regla.id,
+            km_base=vehiculo.km_actual or 0,
+            fecha_base=date.today()
+        ))
+    db.commit()
 
     return RedirectResponse(
         "/vehiculos?created=1",
@@ -174,6 +198,9 @@ def editar_vehiculo(
     modelo: str = Form(...),
     anio: int | None = Form(None),
     color: str | None = Form(None),
+    cilindraje: int | None = Form(None),
+    clase: str | None = Form(None),
+    km_actual: int | None = Form(None),
     cliente_id: int = Form(...),
     db: Session = Depends(get_db)
 ):
@@ -189,11 +216,31 @@ def editar_vehiculo(
             status_code=HTTP_303_SEE_OTHER
         )
 
+    if km_actual is not None and km_actual < 0:
+        return RedirectResponse(
+            f"/vehiculos/{vehiculo_id}/editar?km_error=1",
+            status_code=HTTP_303_SEE_OTHER
+        )
+
+    if (
+        km_actual is not None
+        and vehiculo.km_actual is not None
+        and km_actual < vehiculo.km_actual
+    ):
+        return RedirectResponse(
+            f"/vehiculos/{vehiculo_id}/editar?km_error=1",
+            status_code=HTTP_303_SEE_OTHER
+        )
+
     vehiculo.placa = placa.upper()
     vehiculo.marca = marca
     vehiculo.modelo = modelo
     vehiculo.anio = anio
     vehiculo.color = color
+    vehiculo.cilindraje = cilindraje
+    vehiculo.clase = clase
+    if km_actual is not None:
+        vehiculo.km_actual = km_actual
     vehiculo.cliente_id = cliente_id
 
     db.commit()

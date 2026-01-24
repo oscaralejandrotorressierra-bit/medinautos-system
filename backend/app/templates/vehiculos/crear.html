@@ -32,13 +32,28 @@
         </div>
 
         <div class="form-group">
-            <label>Modelo *</label>
+            <label>Linea *</label>
             <input type="text" name="modelo" required placeholder="Clio">
         </div>
 
         <div class="form-group">
-            <label>Año</label>
+            <label>Modelo</label>
             <input type="number" name="anio" min="1900" max="2100" placeholder="2025">
+        </div>
+
+        <div class="form-group">
+            <label>Cilindraje</label>
+            <input type="number" name="cilindraje" min="0" step="1" placeholder="1600">
+        </div>
+
+        <div class="form-group">
+            <label>Clase</label>
+            <input type="text" name="clase" placeholder="Particular, camioneta, etc.">
+        </div>
+
+        <div class="form-group">
+            <label>Km actual</label>
+            <input type="number" name="km_actual" min="0" step="1" placeholder="0">
         </div>
 
         <div class="form-group">
@@ -63,4 +78,16 @@
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/static/js/vehiculos.js"></script>
+<script>
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has("km_error")) {
+        Swal.fire({
+            icon: "error",
+            title: "Km invalido",
+            text: "El kilometraje no puede ser negativo.",
+            confirmButtonColor: "#d81822"
+        });
+    }
+</script>
 {% endblock %}

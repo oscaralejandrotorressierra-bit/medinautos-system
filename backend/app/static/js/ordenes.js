@@ -14,7 +14,52 @@ document.addEventListener("DOMContentLoaded", () => {
     if (ordenLayout) {
         prepararDetalleOrden(ordenLayout);
     }
+
+    const kpiContainer = document.querySelector(".ordenes-kpi");
+    if (kpiContainer) {
+        actualizarKPIsOrdenes();
+    }
 });
+
+function actualizarTotalesDetalle(totalServicios, totalInsumos) {
+    const totalServiciosEl = document.getElementById("total-servicios");
+    const totalInsumosEl = document.getElementById("total-insumos");
+    if (totalServiciosEl) {
+        totalServiciosEl.textContent = `$${formatearPrecio(totalServicios || 0)}`;
+    }
+    if (totalInsumosEl) {
+        totalInsumosEl.textContent = `$${formatearPrecio(totalInsumos || 0)}`;
+    }
+}
+
+function actualizarKPIsOrdenes() {
+    const estados = Array.from(document.querySelectorAll(".orden-numero"))
+        .map((celda) => (celda.dataset.estado || "abierta"));
+
+    const resumen = estados.reduce((acc, estado) => {
+        acc.total += 1;
+        if (estado === "cerrada") {
+            acc.cerrada += 1;
+        } else if (estado === "en_proceso") {
+            acc.proceso += 1;
+        } else if (estado === "cancelada") {
+            acc.cancelada += 1;
+        } else {
+            acc.abierta += 1;
+        }
+        return acc;
+    }, { abierta: 0, proceso: 0, cerrada: 0, cancelada: 0, total: 0 });
+
+    const kpiAbiertas = document.getElementById("kpi-abiertas");
+    const kpiProceso = document.getElementById("kpi-proceso");
+    const kpiCerradas = document.getElementById("kpi-cerradas");
+    const kpiTotal = document.getElementById("kpi-total");
+
+    if (kpiAbiertas) kpiAbiertas.textContent = resumen.abierta;
+    if (kpiProceso) kpiProceso.textContent = resumen.proceso;
+    if (kpiCerradas) kpiCerradas.textContent = resumen.cerrada;
+    if (kpiTotal) kpiTotal.textContent = resumen.total;
+}
 
 function prepararEliminacionOrdenes(botones) {
     botones.forEach((boton) => {
@@ -49,6 +94,11 @@ function prepararEliminacionOrdenes(botones) {
                     const fila = boton.closest("tr");
                     if (fila) {
                         fila.remove();
+                    }
+                    actualizarKPIsOrdenes();
+                    const tabla = document.querySelector(".ordenes-table tbody");
+                    if (tabla && tabla.querySelectorAll("tr[data-id]").length === 0) {
+                        tabla.innerHTML = `<tr><td colspan="7" class="servicios-empty">No hay ordenes registradas.</td></tr>`;
                     }
 
                     Swal.fire({
@@ -92,7 +142,8 @@ function prepararDetalleOrden(layout) {
             const payload = {
                 descripcion: formOrden.descripcion.value.trim(),
                 cliente_id: Number(formOrden.cliente_id.value),
-                vehiculo_id: Number(formOrden.vehiculo_id.value)
+                vehiculo_id: Number(formOrden.vehiculo_id.value),
+                forma_pago: formOrden.forma_pago ? formOrden.forma_pago.value : null
             };
 
             if (!payload.descripcion || !payload.cliente_id || !payload.vehiculo_id) {
@@ -217,6 +268,7 @@ function prepararDetalleOrden(layout) {
     if (servicioSelect) {
         cargarServicios(servicioSelect).then((mapa) => {
             serviciosMap = mapa;
+            activarSelectBuscable(servicioSelect, "Buscar servicio...");
             if (detalleBody) {
                 cargarDetalleOrden(ordenId, detalleBody, serviciosMap);
             }
@@ -226,6 +278,7 @@ function prepararDetalleOrden(layout) {
     if (insumoSelect) {
         cargarInsumos(insumoSelect).then((mapa) => {
             insumosMap = mapa;
+            activarSelectBuscable(insumoSelect, "Buscar insumo...");
             if (insumoBody) {
                 cargarDetalleInsumos(ordenId, insumoBody, insumosMap);
             }
@@ -286,7 +339,9 @@ function prepararDetalleOrden(layout) {
     }
 
     if (mecanicoSelect) {
-        cargarMecanicos(mecanicoSelect);
+        cargarMecanicos(mecanicoSelect).then(() => {
+            activarSelectBuscable(mecanicoSelect, "Buscar tecnico...");
+        });
     }
 
     if (mecanicoBody) {
@@ -304,7 +359,7 @@ function prepararDetalleOrden(layout) {
                 Swal.fire({
                     icon: "warning",
                     title: "Datos invalidos",
-                    text: "Selecciona un mecanico."
+                    text: "Selecciona un tecnico."
                 });
                 return;
             }
@@ -323,7 +378,7 @@ function prepararDetalleOrden(layout) {
 
                 if (!response.ok) {
                     const detalle = await obtenerDetalleError(response);
-                    throw new Error(detalle || "No se pudo asignar el mecanico.");
+                    throw new Error(detalle || "No se pudo asignar el tecnico.");
                 }
 
                 mecanicoForm.reset();
@@ -331,8 +386,8 @@ function prepararDetalleOrden(layout) {
 
                 Swal.fire({
                     icon: "success",
-                    title: "Mecanico asignado",
-                    text: "El mecanico fue asignado correctamente."
+                    title: "Tecnico asignado",
+                    text: "El tecnico fue asignado correctamente."
                 });
             } catch (error) {
                 Swal.fire({
@@ -379,6 +434,9 @@ async function cargarDetalleOrden(ordenId, detalleBody, serviciosMap) {
         }
 
         const detalles = await response.json();
+        const totalServicios = detalles.reduce((acc, detalle) => acc + Number(detalle.subtotal || 0), 0);
+        window.__totalServicios = totalServicios;
+        actualizarTotalesDetalle(totalServicios, window.__totalInsumos || 0);
 
         if (!detalles || detalles.length === 0) {
             detalleBody.innerHTML = `
@@ -386,6 +444,8 @@ async function cargarDetalleOrden(ordenId, detalleBody, serviciosMap) {
                     <td colspan="5" class="servicios-empty">No hay servicios agregados.</td>
                 </tr>
             `;
+            window.__totalServicios = 0;
+            actualizarTotalesDetalle(0, window.__totalInsumos || 0);
             return;
         }
 
@@ -417,6 +477,8 @@ async function cargarDetalleOrden(ordenId, detalleBody, serviciosMap) {
                 <td colspan="5" class="servicios-empty">${error.message}</td>
             </tr>
         `;
+        window.__totalServicios = 0;
+        actualizarTotalesDetalle(0, window.__totalInsumos || 0);
     }
 }
 
@@ -424,7 +486,7 @@ async function cargarMecanicos(select) {
     try {
         const response = await fetch(`${API_BASE}/mecanicos/`);
         if (!response.ok) {
-            throw new Error("No se pudieron cargar los mecanicos.");
+            throw new Error("No se pudieron cargar los tecnicos.");
         }
 
         const mecanicos = await response.json();
@@ -441,11 +503,115 @@ async function cargarMecanicos(select) {
     }
 }
 
+function activarSelectBuscable(select, placeholder) {
+    if (!select || select.dataset.searchReady === "true") {
+        return;
+    }
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "select-search";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "select-input";
+    input.placeholder = placeholder || "Buscar...";
+    input.autocomplete = "off";
+
+    const menu = document.createElement("div");
+    menu.className = "select-menu";
+
+    const parent = select.parentElement;
+    parent.insertBefore(wrapper, select);
+    wrapper.appendChild(input);
+    wrapper.appendChild(select);
+    wrapper.appendChild(menu);
+
+    const construirMenu = () => {
+        menu.innerHTML = "";
+        const options = Array.from(select.options);
+        options.forEach((option, index) => {
+            const item = document.createElement("div");
+            item.className = "select-option";
+            item.textContent = option.textContent;
+            item.dataset.value = option.value;
+
+            if (index === 0 && option.value === "") {
+                item.classList.add("is-placeholder");
+            }
+
+            item.addEventListener("click", () => {
+                if (item.classList.contains("is-placeholder")) {
+                    select.value = "";
+                    input.value = "";
+                } else {
+                    select.value = option.value;
+                    input.value = option.textContent;
+                }
+                select.dispatchEvent(new Event("change"));
+                menu.classList.remove("is-open");
+            });
+
+            menu.appendChild(item);
+        });
+    };
+
+    const sincronizar = () => {
+        const selected = select.options[select.selectedIndex];
+        if (selected && selected.value) {
+            input.value = selected.textContent;
+        } else {
+            input.value = "";
+        }
+    };
+
+    const filtrar = () => {
+        const term = input.value.trim().toLowerCase();
+        const items = Array.from(menu.children);
+        items.forEach((item) => {
+            if (item.classList.contains("is-placeholder")) {
+                item.style.display = term ? "none" : "block";
+                return;
+            }
+            const texto = item.textContent.toLowerCase();
+            item.style.display = texto.includes(term) ? "block" : "none";
+        });
+    };
+
+    input.addEventListener("focus", () => {
+        construirMenu();
+        filtrar();
+        menu.classList.add("is-open");
+    });
+
+    input.addEventListener("input", () => {
+        filtrar();
+        menu.classList.add("is-open");
+    });
+
+    input.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            menu.classList.remove("is-open");
+        }
+    });
+
+    document.addEventListener("click", (event) => {
+        if (!wrapper.contains(event.target)) {
+            menu.classList.remove("is-open");
+        }
+    });
+
+    select.addEventListener("change", sincronizar);
+
+    construirMenu();
+    sincronizar();
+    select.dataset.searchReady = "true";
+}
+
 async function cargarAsignacionesMecanicos(ordenId, mecanicoBody) {
     try {
         const response = await fetch(`${API_BASE}/mecanicos/ordenes/${ordenId}`);
         if (!response.ok) {
-            throw new Error("No se pudieron cargar los mecanicos.");
+            throw new Error("No se pudieron cargar los tecnicos.");
         }
 
         const asignaciones = await response.json();
@@ -453,7 +619,7 @@ async function cargarAsignacionesMecanicos(ordenId, mecanicoBody) {
         if (!asignaciones || asignaciones.length === 0) {
             mecanicoBody.innerHTML = `
                 <tr>
-                    <td colspan="5" class="servicios-empty">No hay mecanicos asignados.</td>
+                    <td colspan="5" class="servicios-empty">No hay tecnicos asignados.</td>
                 </tr>
             `;
             return;
@@ -468,7 +634,7 @@ async function cargarAsignacionesMecanicos(ordenId, mecanicoBody) {
 
             return `
                 <tr data-mecanico-id="${mecanico.id}">
-                    <td>${nombre || "Mecanico"}</td>
+                    <td>${nombre || "Tecnico"}</td>
                     <td>${especialidad}</td>
                     <td>${fecha}</td>
                     <td>${observaciones}</td>
@@ -498,7 +664,7 @@ function prepararAccionesMecanicos(mecanicoBody, ordenId) {
 
             Swal.fire({
                 icon: "warning",
-                title: "Quitar mecanico",
+                title: "Quitar tecnico",
                 text: "Esta accion no se puede deshacer.",
                 showCancelButton: true,
                 confirmButtonText: "Si, quitar",
@@ -518,7 +684,7 @@ function prepararAccionesMecanicos(mecanicoBody, ordenId) {
 
                     if (!response.ok) {
                         const detalle = await obtenerDetalleError(response);
-                        throw new Error(detalle || "No se pudo quitar el mecanico.");
+                        throw new Error(detalle || "No se pudo quitar el tecnico.");
                     }
 
                     await cargarAsignacionesMecanicos(ordenId, mecanicoBody);
@@ -665,6 +831,9 @@ async function cargarDetalleInsumos(ordenId, insumoBody, insumosMap) {
         }
 
         const detalles = await response.json();
+        const totalInsumos = detalles.reduce((acc, detalle) => acc + Number(detalle.subtotal || 0), 0);
+        window.__totalInsumos = totalInsumos;
+        actualizarTotalesDetalle(window.__totalServicios || 0, totalInsumos);
 
         if (!detalles || detalles.length === 0) {
             insumoBody.innerHTML = `
@@ -672,6 +841,8 @@ async function cargarDetalleInsumos(ordenId, insumoBody, insumosMap) {
                     <td colspan="5" class="servicios-empty">No hay insumos agregados.</td>
                 </tr>
             `;
+            window.__totalInsumos = 0;
+            actualizarTotalesDetalle(window.__totalServicios || 0, 0);
             return;
         }
 
@@ -704,6 +875,8 @@ async function cargarDetalleInsumos(ordenId, insumoBody, insumosMap) {
                 <td colspan="5" class="servicios-empty">${error.message}</td>
             </tr>
         `;
+        window.__totalInsumos = 0;
+        actualizarTotalesDetalle(window.__totalServicios || 0, 0);
     }
 }
 
@@ -846,7 +1019,8 @@ function formatearFecha(valor) {
         month: "2-digit",
         day: "2-digit",
         hour: "2-digit",
-        minute: "2-digit"
+        minute: "2-digit",
+        hour12: true
     });
 }
 

@@ -5,12 +5,19 @@
 {% block page_title %}Nueva Orden{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="/static/css/servicios.css">
+<link rel="stylesheet" href="/static/css/ordenes.css">
 {% endblock %}
 
 {% block content %}
-<form method="post" class="form-card servicio-form">
-    <div class="form-grid">
+<section class="orden-panel orden-panel--full">
+    <div class="panel-header">
+        <div>
+            <h2>Nueva orden</h2>
+            <p class="panel-help">Registra la orden y luego agrega servicios e insumos.</p>
+        </div>
+    </div>
+
+    <form method="post" class="orden-form-grid">
         <div class="form-group form-group-full">
             <label>Descripcion *</label>
             <textarea name="descripcion" rows="3" required></textarea>
@@ -31,18 +38,27 @@
             <select name="vehiculo_id" required>
                 <option value="" disabled selected>Seleccione un vehiculo</option>
                 {% for vehiculo in vehiculos %}
-                <option value="{{ vehiculo.id }}">{{ vehiculo.placa }} - {{ vehiculo.marca }}</option>
+                <option value="{{ vehiculo.id }}">{{ vehiculo.placa }} - {{ vehiculo.marca }} - {{ vehiculo.modelo }}</option>
                 {% endfor %}
             </select>
         </div>
 
-        <div class="form-actions">
+        <div class="form-group">
+            <label>Forma de pago</label>
+            <select name="forma_pago">
+                <option value="" selected>Seleccione una forma</option>
+                <option value="efectivo">Efectivo</option>
+                <option value="transferencia">Transferencia</option>
+            </select>
+        </div>
+
+        <div class="form-actions form-actions-inline">
             <a href="/ordenes" class="btn-secondary">Cancelar</a>
             <button type="submit" class="btn-primary">
                 <i class="fa-solid fa-floppy-disk"></i>
                 Crear orden
             </button>
         </div>
-    </div>
-</form>
+    </form>
+</section>
 {% endblock %}

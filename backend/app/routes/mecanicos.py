@@ -1,5 +1,5 @@
-﻿"""
-Rutas del modulo Mecanicos
+"""
+Rutas del modulo Tecnicos
 """
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -8,7 +8,10 @@ from sqlalchemy.orm import Session
 from backend.app.core.database import get_db
 from backend.app.core.security import admin_o_mecanico
 from backend.app.models.mecanico import Mecanico
+from sqlalchemy import func
+
 from backend.app.models.orden_mecanico import OrdenMecanico
+from backend.app.models.detalle_orden import DetalleOrden
 from backend.app.models.orden_trabajo import OrdenTrabajo
 from backend.app.schemas.mecanico import (
     MecanicoCreateSchema,
@@ -23,7 +26,7 @@ from backend.app.schemas.mecanico import (
 
 router = APIRouter(
     prefix="/mecanicos",
-    tags=["Mecanicos"],
+    tags=["Tecnicos"],
     dependencies=[Depends(admin_o_mecanico)]
 )
 
@@ -38,7 +41,7 @@ def obtener_mecanico(mecanico_id: int, db: Session = Depends(get_db)):
     mecanico = db.query(Mecanico).filter(Mecanico.id == mecanico_id).first()
 
     if not mecanico:
-        raise HTTPException(status_code=404, detail="Mecanico no encontrado")
+        raise HTTPException(status_code=404, detail="Tecnico no encontrado")
 
     return mecanico
 
@@ -48,7 +51,7 @@ def crear_mecanico(data: MecanicoCreateSchema, db: Session = Depends(get_db)):
     existente = db.query(Mecanico).filter(Mecanico.documento == data.documento).first()
 
     if existente:
-        raise HTTPException(status_code=400, detail="Ya existe un mecanico con ese documento")
+        raise HTTPException(status_code=400, detail="Ya existe un tecnico con ese documento")
 
     mecanico = Mecanico(**data.dict())
     db.add(mecanico)
@@ -67,7 +70,7 @@ def actualizar_mecanico(
     mecanico = db.query(Mecanico).filter(Mecanico.id == mecanico_id).first()
 
     if not mecanico:
-        raise HTTPException(status_code=404, detail="Mecanico no encontrado")
+        raise HTTPException(status_code=404, detail="Tecnico no encontrado")
 
     for campo, valor in data.dict(exclude_unset=True).items():
         setattr(mecanico, campo, valor)
@@ -82,7 +85,7 @@ def toggle_mecanico(mecanico_id: int, db: Session = Depends(get_db)):
     mecanico = db.query(Mecanico).filter(Mecanico.id == mecanico_id).first()
 
     if not mecanico:
-        raise HTTPException(status_code=404, detail="Mecanico no encontrado")
+        raise HTTPException(status_code=404, detail="Tecnico no encontrado")
 
     mecanico.activo = not mecanico.activo
     db.commit()
@@ -95,12 +98,12 @@ def eliminar_mecanico(mecanico_id: int, db: Session = Depends(get_db)):
     mecanico = db.query(Mecanico).filter(Mecanico.id == mecanico_id).first()
 
     if not mecanico:
-        raise HTTPException(status_code=404, detail="Mecanico no encontrado")
+        raise HTTPException(status_code=404, detail="Tecnico no encontrado")
 
     db.delete(mecanico)
     db.commit()
 
-    return {"mensaje": "Mecanico eliminado correctamente"}
+    return {"mensaje": "Tecnico eliminado correctamente"}
 
 
 @router.post(
@@ -115,7 +118,7 @@ def asignar_mecanico_a_orden(
 ):
     mecanico = db.query(Mecanico).filter(Mecanico.id == mecanico_id).first()
     if not mecanico:
-        raise HTTPException(status_code=404, detail="Mecanico no encontrado")
+        raise HTTPException(status_code=404, detail="Tecnico no encontrado")
 
     orden = db.query(OrdenTrabajo).filter(OrdenTrabajo.id == orden_id).first()
     if not orden:
@@ -127,11 +130,19 @@ def asignar_mecanico_a_orden(
     ).first()
 
     if existente:
-        raise HTTPException(status_code=400, detail="El mecanico ya esta asignado a la orden")
+        raise HTTPException(status_code=400, detail="El tecnico ya esta asignado a la orden")
+
+    porcentaje = data.porcentaje if data.porcentaje is not None else mecanico.porcentaje_base
+    base_servicios = db.query(func.sum(DetalleOrden.subtotal)).filter(
+        DetalleOrden.orden_id == orden_id
+    ).scalar() or 0.0
+    monto = base_servicios * (porcentaje / 100.0)
 
     asignacion = OrdenMecanico(
         orden_id=orden_id,
         mecanico_id=mecanico_id,
+        porcentaje=porcentaje,
+        monto=monto,
         observaciones=data.observaciones
     )
 
@@ -159,7 +170,7 @@ def quitar_mecanico_de_orden(
     db.delete(asignacion)
     db.commit()
 
-    return {"mensaje": "Mecanico desasignado correctamente"}
+    return {"mensaje": "Tecnico desasignado correctamente"}
 
 
 @router.get(
@@ -169,7 +180,7 @@ def quitar_mecanico_de_orden(
 def listar_ordenes_por_mecanico(mecanico_id: int, db: Session = Depends(get_db)):
     mecanico = db.query(Mecanico).filter(Mecanico.id == mecanico_id).first()
     if not mecanico:
-        raise HTTPException(status_code=404, detail="Mecanico no encontrado")
+        raise HTTPException(status_code=404, detail="Tecnico no encontrado")
 
     return db.query(OrdenMecanico).filter(
         OrdenMecanico.mecanico_id == mecanico_id

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Nuevo Vehiculo | MedinAutos{% endblock %}
+{% block section %}Vehiculos{% endblock %}
+{% block page_title %}Nuevo Vehiculo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<form method="post" class="form-card servicio-form">
+    <div class="form-grid">
+        <div class="form-group form-group-full">
+            <label for="cliente_id">Cliente *</label>
+            <select name="cliente_id" id="cliente_id" required>
+                <option value="" disabled selected>Seleccione un cliente</option>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id }}">{{ cliente.nombre }} - {{ cliente.documento }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Placa *</label>
+            <input type="text" name="placa" required placeholder="ABC123" style="text-transform: uppercase;">
+        </div>
+
+        <div class="form-group">
+            <label>Marca *</label>
+            <input type="text" name="marca" required placeholder="Renault">
+        </div>
+
+        <div class="form-group">
+            <label>Modelo *</label>
+            <input type="text" name="modelo" required placeholder="Clio">
+        </div>
+
+        <div class="form-group">
+            <label>Año</label>
+            <input type="number" name="anio" min="1900" max="2100" placeholder="2025">
+        </div>
+
+        <div class="form-group">
+            <label>Color</label>
+            <input type="text" name="color" placeholder="Rojo">
+        </div>
+
+        <div class="form-actions">
+            <a href="/vehiculos" class="btn-secondary">
+                Cancelar
+            </a>
+
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Guardar vehiculo
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/vehiculos.js"></script>
+{% endblock %}

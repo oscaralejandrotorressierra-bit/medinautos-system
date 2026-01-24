@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Servicios | MedinAutos{% endblock %}
+{% block section %}Servicios{% endblock %}
+{% block page_title %}Servicios{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Servicios</h1>
+        <p class="servicios-subtitle">Gestiona el catalogo de servicios del taller.</p>
+    </div>
+
+    <a href="/servicios/nuevo" class="btn-primary">
+        <i class="fa-solid fa-plus"></i> Nuevo servicio
+    </a>
+</div>
+
+<div class="servicios-card">
+    <table class="servicios-table">
+        <thead>
+            <tr>
+                <th>Servicio</th>
+                <th>Categoria</th>
+                <th>Precio</th>
+                <th>Estado</th>
+                <th class="acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="servicios-body">
+            <tr>
+                <td colspan="5" class="servicios-loading">Cargando servicios...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/servicios.js"></script>
+{% endblock %}

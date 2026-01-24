@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}Clientes | MedinAutos{% endblock %}
+{% block section %}Clientes{% endblock %}
+{% block page_title %}Clientes{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Clientes</h1>
+        <p class="servicios-subtitle">Administra tu cartera de clientes.</p>
+    </div>
+
+    <a href="/clientes/nuevo" class="btn-primary">
+        <i class="fa-solid fa-plus"></i> Nuevo cliente
+    </a>
+</div>
+
+<div class="servicios-card">
+    {% if clientes and clientes|length > 0 %}
+    <table class="servicios-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Documento</th>
+                <th>Telefono</th>
+                <th>Email</th>
+                <th class="acciones">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in clientes %}
+            <tr>
+                <td>{{ c.id }}</td>
+                <td class="servicio-nombre">{{ c.nombre }}</td>
+                <td>{{ c.documento }}</td>
+                <td>{{ c.telefono or "-" }}</td>
+                <td>{{ c.email or "-" }}</td>
+                <td class="acciones">
+                    <a href="/clientes/{{ c.id }}/editar" class="btn-icon btn-edit" title="Editar cliente">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+                    <button type="button" class="btn-icon btn-delete btn-eliminar" data-id="{{ c.id }}"
+                        data-nombre="{{ c.nombre }}" title="Eliminar cliente">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="servicios-empty">
+        No hay clientes registrados.
+    </div>
+    {% endif %}
+</div>
+
+<form id="form-eliminar" method="post" style="display:none;"></form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{% if request.query_params.get('success') %}
+<script>
+    Swal.fire({
+        icon: "success",
+        title: "Cliente creado",
+        text: "El cliente se registro correctamente.",
+        confirmButtonColor: "#d81822"
+    });
+</script>
+{% endif %}
+
+{% if request.query_params.get('deleted') %}
+<script>
+    Swal.fire({
+        icon: "success",
+        title: "Cliente eliminado",
+        text: "El cliente fue eliminado correctamente.",
+        confirmButtonColor: "#d81822"
+    });
+</script>
+{% endif %}
+
+{% if request.query_params.get('updated') %}
+<script>
+    Swal.fire({
+        icon: "success",
+        title: "Cliente actualizado",
+        text: "Los datos del cliente se actualizaron correctamente.",
+        confirmButtonColor: "#d81822"
+    }).then(() => {
+        window.history.replaceState({}, document.title, "/clientes/");
+    });
+</script>
+{% endif %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".btn-eliminar").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const clienteId = btn.dataset.id;
+                const nombreCliente = btn.dataset.nombre;
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Eliminar cliente",
+                    html: `
+                        <p>Estas a punto de eliminar a:</p>
+                        <strong>${nombreCliente}</strong>
+                        <p style="margin-top:10px;color:#b91c1c;">
+                            Esta accion no se puede deshacer.
+                        </p>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: "Si, eliminar",
+                    cancelButtonText: "Cancelar",
+                    confirmButtonColor: "#d81822",
+                    cancelButtonColor: "#6b7280"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.getElementById("form-eliminar");
+                        form.action = `/clientes/${clienteId}/eliminar`;
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -3,24 +3,27 @@ Rutas Frontend - Autenticación y Vistas
 Sistema MedinAutos
 """
 
+from datetime import date
+
 from fastapi import APIRouter, Request, Form, Depends
 from fastapi.responses import RedirectResponse, HTMLResponse
 from sqlalchemy.orm import Session
-from fastapi.templating import Jinja2Templates
+from backend.app.core.templates import templates
 
 from backend.app.core.database import get_db
 from backend.app.models.usuario import Usuario
 from backend.app.models.orden_trabajo import OrdenTrabajo
 from backend.app.models.cliente import Cliente
 from backend.app.models.vehiculo import Vehiculo
+from backend.app.models.recomendacion_regla import RecomendacionRegla
+from backend.app.models.vehiculo_recomendacion import VehiculoRecomendacion
+from backend.app.core.novedades import construir_alerta_vehiculo
 from backend.app.core.security import (
     verificar_password,
     crear_token
 )
 
 router = APIRouter(tags=["Frontend"])
-templates = Jinja2Templates(directory="backend/app/templates")
-
 
 # =====================================
 # LOGIN (FORMULARIO)
@@ -196,12 +199,14 @@ def crear_orden_form(
     descripcion: str = Form(...),
     cliente_id: int = Form(...),
     vehiculo_id: int = Form(...),
+    forma_pago: str = Form(None),
     db: Session = Depends(get_db)
 ):
     orden = OrdenTrabajo(
         descripcion=descripcion,
         cliente_id=cliente_id,
         vehiculo_id=vehiculo_id,
+        forma_pago=forma_pago,
         estado="abierta",
         total=0.0
     )
@@ -230,6 +235,27 @@ def vista_detalle_orden(
 
     clientes = db.query(Cliente).order_by(Cliente.nombre.asc()).all()
     vehiculos = db.query(Vehiculo).order_by(Vehiculo.placa.asc()).all()
+    alertas = []
+    if orden.vehiculo:
+        reglas = db.query(RecomendacionRegla).filter(RecomendacionRegla.activo == True).all()
+        recs = db.query(VehiculoRecomendacion).filter(
+            VehiculoRecomendacion.vehiculo_id == orden.vehiculo_id
+        ).all()
+        rec_map = {rec.regla_id: rec for rec in recs}
+
+        for regla in reglas:
+            rec = rec_map.get(regla.id)
+            if not rec:
+                rec = VehiculoRecomendacion(
+                    vehiculo_id=orden.vehiculo_id,
+                    regla_id=regla.id,
+                    km_base=orden.vehiculo.km_actual or 0,
+                    fecha_base=date.today()
+                )
+                db.add(rec)
+                db.commit()
+                db.refresh(rec)
+            alertas.append(construir_alerta_vehiculo(orden.vehiculo, regla, rec))
 
     return templates.TemplateResponse(
         "ordenes/detalle.html",
@@ -237,7 +263,8 @@ def vista_detalle_orden(
             "request": request,
             "orden": orden,
             "clientes": clientes,
-            "vehiculos": vehiculos
+            "vehiculos": vehiculos,
+            "novedades_alertas": alertas
         }
     )
 
@@ -256,6 +283,27 @@ def vista_editar_servicio(request: Request, servicio_id: int):
             "request": request,
             "servicio_id": servicio_id
         }
+    )
+
+@router.get("/contabilidad", response_class=HTMLResponse)
+def vista_contabilidad(request: Request):
+    return templates.TemplateResponse(
+        "contabilidad/overview.html",
+        {"request": request}
+    )
+
+@router.get("/nomina", response_class=HTMLResponse)
+def vista_nomina(request: Request):
+    return templates.TemplateResponse(
+        "nomina/overview.html",
+        {"request": request}
+    )
+
+@router.get("/reportes", response_class=HTMLResponse)
+def vista_reportes(request: Request):
+    return templates.TemplateResponse(
+        "reportes/overview.html",
+        {"request": request}
     )
 
 

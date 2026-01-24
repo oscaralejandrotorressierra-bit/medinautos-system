@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Orden | MedinAutos{% endblock %}
+{% block section %}Ordenes{% endblock %}
+{% block page_title %}Nueva Orden{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/ordenes.css">
+{% endblock %}
+
+{% block content %}
+<section class="orden-panel orden-panel--full">
+    <div class="panel-header">
+        <div>
+            <h2>Nueva orden</h2>
+            <p class="panel-help">Registra la orden y luego agrega servicios e insumos.</p>
+        </div>
+    </div>
+
+    <form method="post" class="orden-form-grid">
+        <div class="form-group form-group-full">
+            <label>Descripcion *</label>
+            <textarea name="descripcion" rows="3" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Cliente *</label>
+            <select name="cliente_id" required>
+                <option value="" disabled selected>Seleccione un cliente</option>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id }}">{{ cliente.nombre }} - {{ cliente.documento }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Vehiculo *</label>
+            <select name="vehiculo_id" required>
+                <option value="" disabled selected>Seleccione un vehiculo</option>
+                {% for vehiculo in vehiculos %}
+                <option value="{{ vehiculo.id }}">{{ vehiculo.placa }} - {{ vehiculo.marca }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Forma de pago</label>
+            <select name="forma_pago">
+                <option value="" selected>Seleccione una forma</option>
+                <option value="efectivo">Efectivo</option>
+                <option value="transferencia">Transferencia</option>
+            </select>
+        </div>
+
+        <div class="form-actions form-actions-inline">
+            <a href="/ordenes" class="btn-secondary">Cancelar</a>
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Crear orden
+            </button>
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -7,7 +7,9 @@ class VehiculoBase(BaseModel):
     marca: str
     modelo: str
     anio: Optional[int] = None
-    tipo: Optional[str] = None
+    cilindraje: Optional[int] = None
+    clase: Optional[str] = None
+    km_actual: Optional[int] = None
     cliente_id: int
 
 
@@ -19,4 +21,4 @@ class VehiculoResponse(VehiculoBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login | MedinAutos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Playfair+Display:wght@600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/login.css">
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="login-shell">
+            <div class="login-brand">
+                <div class="brand-logo">
+                    <img src="/static/img/logo_medinautos.png" alt="MedinAutos">
+                </div>
+                <h1>MedinAutos</h1>
+                <p>Gestiona el taller con orden, velocidad y control.</p>
+                <div class="brand-tags">
+                    <span>Ordenes</span>
+                    <span>Servicios</span>
+                    <span>Clientes</span>
+                </div>
+            </div>
+
+            <div class="login-card">
+                <h2>Bienvenido de nuevo</h2>
+                <p class="login-subtitle">Ingresa tus credenciales para continuar.</p>
+
+                {% if error %}
+                <div class="login-error">{{ error }}</div>
+                {% endif %}
+
+                <form method="post" action="/login" class="login-form">
+                    <label class="field">
+                        <span>Usuario</span>
+                        <input type="text" name="username" placeholder="Ingresa tu usuario" required>
+                    </label>
+
+                    <label class="field">
+                        <span>Contrasena</span>
+                        <input type="password" name="password" placeholder="Tu clave segura" required>
+                    </label>
+
+                    <button type="submit">Ingresar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

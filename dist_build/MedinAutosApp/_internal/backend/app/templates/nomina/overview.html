@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Nomina | MedinAutos{% endblock %}
+{% block section %}Nomina{% endblock %}
+{% block page_title %}Nomina{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/nomina.css">
+{% endblock %}
+
+{% block content %}
+<div class="nomina-header">
+    <div>
+        <h1>Nomina de mecanicos</h1>
+        <p class="nomina-subtitle">Liquida pagos por periodo y revisa historicos.</p>
+    </div>
+</div>
+
+<section class="nomina-section">
+    <div class="section-header">
+        <div>
+            <h2>Crear liquidacion</h2>
+            <p class="section-help">Selecciona mecanico y periodo para calcular la liquidacion.</p>
+        </div>
+    </div>
+    <form id="form-liquidacion" class="panel-form">
+        <div class="form-grid">
+            <div class="form-row">
+                <label>Mecanico</label>
+                <select name="mecanico_id" id="mecanico-select" required></select>
+            </div>
+            <div class="form-row">
+                <label>Fecha inicio</label>
+                <input type="date" name="fecha_inicio" required>
+            </div>
+            <div class="form-row">
+                <label>Fecha fin</label>
+                <input type="date" name="fecha_fin" required>
+            </div>
+            <div class="form-row">
+                <label>Frecuencia</label>
+                <select name="frecuencia">
+                    <option value="semanal">Semanal</option>
+                    <option value="quincenal" selected>Quincenal</option>
+                    <option value="mensual">Mensual</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Observaciones</label>
+                <input type="text" name="observaciones" maxlength="255">
+            </div>
+        </div>
+        <button type="submit" class="btn-primary">Crear liquidacion</button>
+    </form>
+</section>
+
+<section class="nomina-section">
+    <div class="section-header">
+        <div>
+            <h2>Historico de liquidaciones</h2>
+            <p class="section-help">Consulta pagos generados por mecanico y periodo.</p>
+        </div>
+    </div>
+    <div class="nomina-filters">
+        <div class="form-row">
+            <label>Mecanico</label>
+            <select id="filtro-mecanico"></select>
+        </div>
+        <div class="form-row">
+            <label>Desde</label>
+            <input type="date" id="filtro-desde">
+        </div>
+        <div class="form-row">
+            <label>Hasta</label>
+            <input type="date" id="filtro-hasta">
+        </div>
+        <div class="form-row">
+            <label>Estado</label>
+            <select id="filtro-estado">
+                <option value="">Todos</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="pagado">Pagado</option>
+            </select>
+        </div>
+        <button id="btn-limpiar-filtros" class="btn-secondary">Limpiar filtros</button>
+    </div>
+    <div class="table-wrapper">
+        <table class="table" id="tabla-liquidaciones">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Mecanico</th>
+                    <th>Periodo</th>
+                    <th>Total base</th>
+                    <th>Total a pagar</th>
+                    <th>Estado</th>
+                    <th class="acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="7" class="table-empty">Cargando liquidaciones...</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="tabla-totales">
+                    <td colspan="3">Totales visibles</td>
+                    <td id="total-base">$0</td>
+                    <td id="total-pagado">$0</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/nomina.js"></script>
+{% endblock %}

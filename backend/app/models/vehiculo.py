@@ -20,6 +20,9 @@ class Vehiculo(Base):
     modelo = Column(String, nullable=False)
     color = Column(String, nullable=True)
     anio = Column(Integer, nullable=True)
+    cilindraje = Column(Integer, nullable=True)
+    clase = Column(String, nullable=True)
+    km_actual = Column(Integer, nullable=True)
 
     cliente_id = Column(Integer, ForeignKey("clientes.id"), nullable=False)
 

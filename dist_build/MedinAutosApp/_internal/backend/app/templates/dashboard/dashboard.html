@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | MedinAutos{% endblock %}
+{% block section %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<div class="servicios-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="servicios-subtitle">Resumen general del sistema.</p>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        <div class="card-label">Total clientes</div>
+        <div class="card-value" id="total-clientes">0</div>
+        <div class="card-meta">Clientes registrados</div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="card-label">Total vehiculos</div>
+        <div class="card-value" id="total-vehiculos">0</div>
+        <div class="card-meta">Flota activa</div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="card-label">Estado del sistema</div>
+        <div class="card-status status-ok" id="estado-sistema">Operativo</div>
+        <div class="card-meta">Servicios y reportes</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/dashboard.js"></script>
+{% endblock %}

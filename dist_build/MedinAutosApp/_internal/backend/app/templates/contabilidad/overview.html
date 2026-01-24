@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Contabilidad | MedinAutos{% endblock %}
+{% block section %}Contabilidad{% endblock %}
+{% block page_title %}Contabilidad{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/contabilidad.css">
+{% endblock %}
+
+{% block content %}
+<div class="contabilidad-header">
+    <div>
+        <h1>Modulo contable</h1>
+        <p class="contabilidad-subtitle">Control diario de caja, proveedores y liquidaciones.</p>
+    </div>
+    <div class="header-actions">
+        <button id="btn-recargar-movimientos" class="btn-secondary">Actualizar movimientos</button>
+    </div>
+</div>
+
+<section class="contabilidad-section">
+    <div class="section-header">
+        <div>
+            <h2>Caja diaria</h2>
+            <p class="section-help">Apertura, cierre y saldos del dia. Todos los movimientos quedan auditados.</p>
+        </div>
+        <span id="caja-estado" class="status-pill">Cargando...</span>
+    </div>
+
+    <div class="section-body two-columns">
+        <div class="panel">
+            <div class="panel-highlight">
+                <div>
+                    <span>Saldo inicial</span>
+                    <strong id="caja-saldo-inicial">$0</strong>
+                </div>
+                <div>
+                    <span>Saldo actual</span>
+                    <strong id="caja-saldo-actual">$0</strong>
+                </div>
+                <div>
+                    <span>Saldo final</span>
+                    <strong id="caja-saldo-final">$0</strong>
+                </div>
+                <div>
+                    <span>Fecha apertura</span>
+                    <strong id="caja-fecha-apertura">-</strong>
+                </div>
+            </div>
+            <div class="alert alert-info">
+                Abre la caja antes de cerrar ordenes. El cierre genera provisiones de proveedores y mecanicos.
+            </div>
+        </div>
+
+        <div class="panel panel-forms">
+            <form id="form-abrir-caja" class="panel-form">
+                <h3>Apertura de caja</h3>
+                <div class="form-row">
+                    <label>Saldo inicial</label>
+                    <input type="number" name="saldo_inicial" min="0" step="0.01" value="0">
+                </div>
+                <div class="form-row">
+                    <label>Observaciones</label>
+                    <input type="text" name="observaciones" maxlength="255">
+                </div>
+                <button type="submit" class="btn-primary">Abrir caja</button>
+            </form>
+
+            <form id="form-cerrar-caja" class="panel-form">
+                <h3>Cierre de caja</h3>
+                <div class="form-row">
+                    <label>Saldo final</label>
+                    <input type="number" name="saldo_final" min="0" step="0.01">
+                </div>
+                <div class="form-row">
+                    <label>Observaciones</label>
+                    <input type="text" name="observaciones" maxlength="255">
+                </div>
+                <button type="submit" class="btn-primary">Cerrar caja</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="contabilidad-section">
+    <div class="section-header">
+        <div>
+            <h2>Movimientos de caja</h2>
+            <p class="section-help">Registra ingresos/egresos manuales y revisa el historico.</p>
+        </div>
+    </div>
+
+    <div class="section-body">
+        <form id="form-movimiento-caja" class="panel-form">
+            <div class="form-grid">
+                <div class="form-row">
+                    <label>Tipo</label>
+                    <select name="tipo" required>
+                        <option value="" selected>Seleccione un tipo</option>
+                        <option value="ingreso">Ingreso</option>
+                        <option value="egreso">Egreso</option>
+                    </select>
+                    <small class="form-help">
+                        Ingreso = entra dinero a la caja. Egreso = sale dinero de la caja.
+                    </small>
+                </div>
+                <div class="form-row">
+                    <label>Concepto</label>
+                    <input type="text" name="concepto" maxlength="120" required>
+                </div>
+                <div class="form-row">
+                    <label>Monto</label>
+                    <input type="text" name="monto" class="currency-input" inputmode="numeric" required>
+                </div>
+                <div class="form-row">
+                    <label>Orden</label>
+                    <select name="orden_id" id="orden-select"></select>
+                </div>
+                <div class="form-row">
+                    <label>Proveedor</label>
+                    <select name="proveedor_id" id="proveedor-movimiento-select"></select>
+                </div>
+                <div class="form-row">
+                    <label>Motivo</label>
+                    <input type="text" name="motivo" maxlength="255">
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">Registrar movimiento</button>
+        </form>
+
+        <div class="table-wrapper">
+            <table class="table" id="tabla-movimientos">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Concepto</th>
+                        <th>Monto</th>
+                        <th>Orden</th>
+                        <th>Proveedor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" class="table-empty">Cargando movimientos...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="contabilidad-section">
+    <div class="section-header">
+        <div>
+            <h2>Proveedores</h2>
+            <p class="section-help">Consulta cargos y pagos por proveedor con detalle.</p>
+        </div>
+    </div>
+    <div class="section-body">
+        <div class="panel">
+            <div class="form-row">
+                <label>Proveedor</label>
+                <select id="proveedor-select"></select>
+            </div>
+            <div class="panel-highlight">
+                <div>
+                    <span>Saldo pendiente</span>
+                    <strong id="proveedor-saldo">$0</strong>
+                </div>
+                <div>
+                    <span>Cargos</span>
+                    <strong id="proveedor-cargos">$0</strong>
+                </div>
+                <div>
+                    <span>Pagos/Abonos</span>
+                    <strong id="proveedor-pagos">$0</strong>
+                </div>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table class="table" id="tabla-proveedor">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Subtotal</th>
+                            <th>Orden</th>
+                            <th>Item</th>
+                            <th>Cantidad</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="7" class="table-empty">Selecciona un proveedor.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/contabilidad.js"></script>
+{% endblock %}

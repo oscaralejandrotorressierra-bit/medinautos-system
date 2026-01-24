@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Vehiculo | MedinAutos{% endblock %}
+{% block section %}Vehiculos{% endblock %}
+{% block page_title %}Editar Vehiculo{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/servicios.css">
+{% endblock %}
+
+{% block content %}
+<form method="post" class="form-card servicio-form">
+    <div class="form-grid">
+        <div class="form-group form-group-full">
+            <label>Cliente *</label>
+            <select name="cliente_id" required>
+                {% for cliente in clientes %}
+                <option value="{{ cliente.id }}" {% if cliente.id==vehiculo.cliente_id %}selected{% endif %}>
+                    {{ cliente.nombre }} - {{ cliente.documento }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Placa *</label>
+            <input type="text" name="placa" value="{{ vehiculo.placa }}" required style="text-transform: uppercase;">
+        </div>
+
+        <div class="form-group">
+            <label>Marca *</label>
+            <input type="text" name="marca" value="{{ vehiculo.marca }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Modelo *</label>
+            <input type="text" name="modelo" value="{{ vehiculo.modelo }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Año</label>
+            <input type="number" name="anio" value="{{ vehiculo.anio }}">
+        </div>
+
+        <div class="form-group">
+            <label>Color</label>
+            <input type="text" name="color" value="{{ vehiculo.color }}">
+        </div>
+
+        <div class="form-actions">
+            <a href="/vehiculos" class="btn-secondary">
+                Cancelar
+            </a>
+
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-floppy-disk"></i>
+                Guardar cambios
+            </button>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has("updated")) {
+        Swal.fire({
+            icon: "success",
+            title: "Vehiculo actualizado",
+            text: "Los cambios se guardaron correctamente",
+            confirmButtonColor: "#d81822"
+        });
+    }
+</script>
+{% endblock %}

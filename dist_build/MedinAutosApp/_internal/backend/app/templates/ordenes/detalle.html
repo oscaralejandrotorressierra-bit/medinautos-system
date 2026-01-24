@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+
+{% block title %}Orden #{{ orden.id }} | MedinAutos{% endblock %}
+{% block section %}Ordenes{% endblock %}
+{% block page_title %}Orden #{{ orden.id }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/ordenes.css">
+{% endblock %}
+
+{% block content %}
+<div class="ordenes-header">
+    <div>
+        <h1>Orden #{{ orden.id }}</h1>
+        <p class="ordenes-subtitle">Gestiona informacion, servicios, insumos y mecanicos asignados.</p>
+    </div>
+
+    <div class="ordenes-actions">
+        <a href="/api/ordenes/{{ orden.id }}/pdf" target="_blank" class="btn-secondary">
+            <i class="fa-solid fa-file-pdf"></i>
+            PDF
+        </a>
+        <a href="/ordenes" class="btn-secondary">Volver</a>
+    </div>
+</div>
+
+<div class="orden-layout" data-orden-id="{{ orden.id }}">
+    <section class="orden-panel orden-panel--full">
+        <div class="panel-header">
+            <div>
+                <h2>Resumen de la orden</h2>
+                <p class="panel-help">Actualiza datos generales y estado antes de cerrar.</p>
+            </div>
+            <div class="orden-total">
+                Total actual:
+                <span id="orden-total">${{ "{:,.0f}".format(orden.total or 0) }}</span>
+            </div>
+        </div>
+
+        <form id="form-orden" class="orden-form-grid">
+            <div class="form-group form-group-full">
+                <label>Descripcion *</label>
+                <textarea name="descripcion" rows="3" required>{{ orden.descripcion }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Cliente *</label>
+                <select name="cliente_id" required>
+                    {% for cliente in clientes %}
+                    <option value="{{ cliente.id }}" {% if cliente.id==orden.cliente_id %}selected{% endif %}>
+                        {{ cliente.nombre }} - {{ cliente.documento }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Vehiculo *</label>
+                <select name="vehiculo_id" required>
+                    {% for vehiculo in vehiculos %}
+                    <option value="{{ vehiculo.id }}" {% if vehiculo.id==orden.vehiculo_id %}selected{% endif %}>
+                        {{ vehiculo.placa }} - {{ vehiculo.marca }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Forma de pago</label>
+                <select name="forma_pago">
+                    <option value="" {% if not orden.forma_pago %}selected{% endif %}>Seleccione una forma</option>
+                    <option value="efectivo" {% if orden.forma_pago=="efectivo" %}selected{% endif %}>Efectivo</option>
+                    <option value="transferencia" {% if orden.forma_pago=="transferencia" %}selected{% endif %}>Transferencia</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Estado</label>
+                <select id="estado-select">
+                    <option value="abierta" {% if orden.estado=="abierta" %}selected{% endif %}>Abierta</option>
+                    <option value="en_proceso" {% if orden.estado=="en_proceso" %}selected{% endif %}>En proceso</option>
+                    <option value="cerrada" {% if orden.estado=="cerrada" %}selected{% endif %}>Cerrada</option>
+                    <option value="cancelada" {% if orden.estado=="cancelada" %}selected{% endif %}>Cancelada</option>
+                </select>
+            </div>
+
+            <div class="form-actions form-actions-inline">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Guardar cambios
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <section class="orden-panel">
+        <div class="panel-header">
+            <div>
+                <h2>Servicios</h2>
+                <p class="panel-help">Agrega servicios y ajusta cantidades.</p>
+            </div>
+        </div>
+        <form id="form-detalle" class="orden-detalle-form">
+            <div class="form-group">
+                <label>Servicio</label>
+                <select name="servicio_id" data-role="servicio-select" required>
+                    <option value="">Selecciona un servicio</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Cantidad</label>
+                <input type="number" name="cantidad" min="1" value="1" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Agregar servicio
+                </button>
+            </div>
+        </form>
+
+        <table class="ordenes-table orden-table">
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                    <th class="acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="detalle-body">
+                <tr>
+                    <td colspan="5" class="ordenes-empty">Cargando servicios...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="orden-panel">
+        <div class="panel-header">
+            <div>
+                <h2>Insumos de almacen</h2>
+                <p class="panel-help">Registra repuestos y materiales usados.</p>
+            </div>
+        </div>
+        <form id="form-insumo" class="orden-detalle-form">
+            <div class="form-group">
+                <label>Insumo</label>
+                <select name="item_id" data-role="insumo-select" required>
+                    <option value="">Selecciona un insumo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Cantidad</label>
+                <input type="number" name="cantidad" min="0.01" step="0.01" value="1" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Agregar insumo
+                </button>
+            </div>
+        </form>
+
+        <table class="ordenes-table orden-table">
+            <thead>
+                <tr>
+                    <th>Insumo</th>
+                    <th>Cantidad</th>
+                    <th>Precio</th>
+                    <th>Subtotal</th>
+                    <th class="acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="insumo-body">
+                <tr>
+                    <td colspan="5" class="ordenes-empty">Cargando insumos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="orden-panel orden-panel--full">
+        <div class="panel-header">
+            <div>
+                <h2>Mecanicos asignados</h2>
+                <p class="panel-help">Asigna responsables y registra observaciones.</p>
+            </div>
+        </div>
+        <form id="form-mecanico" class="orden-mecanico-form">
+            <div class="form-group">
+                <label>Mecanico</label>
+                <select name="mecanico_id" data-role="mecanico-select" required>
+                    <option value="">Selecciona un mecanico</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Observaciones</label>
+                <input type="text" name="observaciones" maxlength="255" placeholder="Opcional">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Asignar mecanico
+                </button>
+            </div>
+        </form>
+
+        <table class="ordenes-table orden-table">
+            <thead>
+                <tr>
+                    <th>Mecanico</th>
+                    <th>Especialidad</th>
+                    <th>Fecha</th>
+                    <th>Observaciones</th>
+                    <th class="acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="mecanico-body">
+                <tr>
+                    <td colspan="5" class="ordenes-empty">Cargando mecanicos...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/ordenes.js"></script>
+{% if request.query_params.get('created') %}
+<script>
+    Swal.fire({
+        icon: "success",
+        title: "Orden creada",
+        text: "La orden fue registrada correctamente.",
+        confirmButtonColor: "#d81822"
+    });
+</script>
+{% endif %}
+{% endblock %}

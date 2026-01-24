@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Editar Mecanico | MedinAutos{% endblock %}
-{% block section %}Mecanicos{% endblock %}
-{% block page_title %}Editar Mecanico{% endblock %}
+{% block title %}Editar Tecnico | MedinAutos{% endblock %}
+{% block section %}Tecnicos{% endblock %}
+{% block page_title %}Editar Tecnico{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="/static/css/servicios.css">
@@ -42,8 +42,43 @@
         </div>
 
         <div class="form-group">
+            <label>EPS</label>
+            <input type="text" name="eps">
+        </div>
+
+        <div class="form-group">
+            <label>Tipo de sangre</label>
+            <input type="text" name="tipo_sangre">
+        </div>
+
+        <div class="form-group">
+            <label>Fecha de nacimiento</label>
+            <input type="date" name="fecha_nacimiento">
+        </div>
+
+        <div class="form-group">
+            <label>Contacto emergencia</label>
+            <input type="text" name="contacto_emergencia_nombre">
+        </div>
+
+        <div class="form-group">
+            <label>Parentesco emergencia</label>
+            <input type="text" name="contacto_emergencia_parentesco">
+        </div>
+
+        <div class="form-group">
+            <label>Telefono emergencia</label>
+            <input type="text" name="contacto_emergencia_telefono">
+        </div>
+
+        <div class="form-group">
             <label>Fecha de ingreso</label>
             <input type="date" name="fecha_ingreso">
+        </div>
+
+        <div class="form-group">
+            <label>Porcentaje base</label>
+            <input type="number" name="porcentaje_base" min="0" max="100" step="0.01">
         </div>
 
         <div class="form-group form-group-switch">

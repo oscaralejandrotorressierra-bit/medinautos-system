@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Reportes | MedinAutos{% endblock %}
+{% block section %}Reportes{% endblock %}
+{% block page_title %}Reportes{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/reportes.css">
+{% endblock %}
+
+{% block content %}
+<div class="reportes-header">
+    <div>
+        <h1>Reportes operativos</h1>
+        <p class="reportes-subtitle">Analiza ingresos, servicios y ordenes cerradas en segundos.</p>
+    </div>
+</div>
+
+<section class="reportes-section">
+    <div class="section-header">
+        <div>
+            <h2>Filtros por fecha</h2>
+            <p class="section-help">Selecciona un rango para calcular ingresos y exportar.</p>
+        </div>
+        <div class="reportes-actions">
+            <button class="btn-secondary" id="btn-limpiar-reportes">Limpiar</button>
+            <button class="btn-primary" id="btn-aplicar-reportes">Aplicar filtros</button>
+        </div>
+    </div>
+    <div class="reportes-filters">
+        <div class="form-row">
+            <label>Desde</label>
+            <input type="date" id="reporte-desde">
+        </div>
+        <div class="form-row">
+            <label>Hasta</label>
+            <input type="date" id="reporte-hasta">
+        </div>
+        <div class="export-group">
+            <button class="btn-outline" id="btn-pdf-ordenes">
+                <i class="fa-solid fa-file-pdf"></i>
+                PDF ordenes cerradas
+            </button>
+            <button class="btn-outline" id="btn-excel-ingresos">
+                <i class="fa-solid fa-file-excel"></i>
+                Excel ingresos
+            </button>
+        </div>
+    </div>
+</section>
+
+<section class="reportes-section">
+    <div class="reportes-kpis">
+        <div class="kpi-card">
+            <span>Ingresos totales</span>
+            <strong id="kpi-total">$0</strong>
+            <small>Ordenes cerradas</small>
+        </div>
+        <div class="kpi-card kpi-highlight">
+            <span>Ingresos en rango</span>
+            <strong id="kpi-rango">-</strong>
+            <small id="kpi-rango-fecha">Sin filtro</small>
+        </div>
+        <div class="kpi-card">
+            <span>Ordenes cerradas</span>
+            <strong id="kpi-ordenes">0</strong>
+            <small id="kpi-ordenes-fecha">Sin filtro</small>
+        </div>
+    </div>
+</section>
+
+<section class="reportes-section">
+    <div class="section-header">
+        <div>
+            <h2>Servicios mas vendidos</h2>
+            <p class="section-help">Ranking por cantidad y total generado.</p>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="table" id="tabla-servicios">
+            <thead>
+                <tr>
+                    <th>Servicio</th>
+                    <th>Cantidad</th>
+                    <th>Total generado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3" class="table-empty">Cargando servicios...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="reportes-section">
+    <div class="section-header">
+        <div>
+            <h2>Ordenes finalizadas</h2>
+            <p class="section-help">Consulta ordenes canceladas o cerradas con su detalle.</p>
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table class="table" id="tabla-ordenes">
+            <thead>
+                <tr>
+                    <th>Orden</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Cliente</th>
+                    <th>Vehiculo</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="6" class="table-empty">Cargando ordenes...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/reportes.js"></script>
+{% endblock %}

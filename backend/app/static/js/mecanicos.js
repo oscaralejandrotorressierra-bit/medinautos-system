@@ -55,14 +55,14 @@ function prepararFormulario(formulario) {
 
             if (!response.ok) {
                 const detalle = await obtenerDetalleError(response);
-                throw new Error(detalle || "No se pudo guardar el mecanico.");
+                throw new Error(detalle || "No se pudo guardar el tecnico.");
             }
 
             await response.json();
 
             Swal.fire({
                 icon: "success",
-                title: modo === "edit" ? "Mecanico actualizado" : "Mecanico creado",
+                title: modo === "edit" ? "Tecnico actualizado" : "Tecnico creado",
                 text: "Los cambios se guardaron correctamente.",
                 confirmButtonText: "OK"
             }).then(() => {
@@ -89,7 +89,20 @@ function construirPayload(formulario, incluirActivo) {
     const telefono = formulario.telefono.value.trim();
     const email = formulario.email.value.trim();
     const especialidad = formulario.especialidad.value.trim();
+    const eps = formulario.eps ? formulario.eps.value.trim() : "";
+    const tipoSangre = formulario.tipo_sangre ? formulario.tipo_sangre.value.trim() : "";
+    const fechaNacimiento = formulario.fecha_nacimiento ? formulario.fecha_nacimiento.value : "";
+    const contactoNombre = formulario.contacto_emergencia_nombre
+        ? formulario.contacto_emergencia_nombre.value.trim()
+        : "";
+    const contactoParentesco = formulario.contacto_emergencia_parentesco
+        ? formulario.contacto_emergencia_parentesco.value.trim()
+        : "";
+    const contactoTelefono = formulario.contacto_emergencia_telefono
+        ? formulario.contacto_emergencia_telefono.value.trim()
+        : "";
     const fechaIngreso = formulario.fecha_ingreso.value;
+    const porcentajeBase = formulario.porcentaje_base ? formulario.porcentaje_base.value : "";
 
     if (!nombres || !apellidos || !documento) {
         Swal.fire({
@@ -107,7 +120,14 @@ function construirPayload(formulario, incluirActivo) {
         telefono: telefono || null,
         email: email || null,
         especialidad: especialidad || null,
-        fecha_ingreso: fechaIngreso || null
+        eps: eps || null,
+        tipo_sangre: tipoSangre || null,
+        fecha_nacimiento: fechaNacimiento || null,
+        contacto_emergencia_nombre: contactoNombre || null,
+        contacto_emergencia_parentesco: contactoParentesco || null,
+        contacto_emergencia_telefono: contactoTelefono || null,
+        fecha_ingreso: fechaIngreso || null,
+        porcentaje_base: porcentajeBase ? Number(porcentajeBase) : 0
     };
 
     if (incluirActivo && formulario.activo) {
@@ -121,7 +141,7 @@ async function cargarMecanico(mecanicoId, formulario) {
     try {
         const response = await fetch(`${API_BASE}/mecanicos/${mecanicoId}`);
         if (!response.ok) {
-            throw new Error("No se pudo cargar el mecanico.");
+            throw new Error("No se pudo cargar el tecnico.");
         }
 
         const mecanico = await response.json();
@@ -131,8 +151,29 @@ async function cargarMecanico(mecanicoId, formulario) {
         formulario.telefono.value = mecanico.telefono || "";
         formulario.email.value = mecanico.email || "";
         formulario.especialidad.value = mecanico.especialidad || "";
+        if (formulario.eps) {
+            formulario.eps.value = mecanico.eps || "";
+        }
+        if (formulario.tipo_sangre) {
+            formulario.tipo_sangre.value = mecanico.tipo_sangre || "";
+        }
+        if (formulario.fecha_nacimiento) {
+            formulario.fecha_nacimiento.value = mecanico.fecha_nacimiento || "";
+        }
+        if (formulario.contacto_emergencia_nombre) {
+            formulario.contacto_emergencia_nombre.value = mecanico.contacto_emergencia_nombre || "";
+        }
+        if (formulario.contacto_emergencia_parentesco) {
+            formulario.contacto_emergencia_parentesco.value = mecanico.contacto_emergencia_parentesco || "";
+        }
+        if (formulario.contacto_emergencia_telefono) {
+            formulario.contacto_emergencia_telefono.value = mecanico.contacto_emergencia_telefono || "";
+        }
         if (formulario.fecha_ingreso) {
             formulario.fecha_ingreso.value = mecanico.fecha_ingreso || "";
+        }
+        if (formulario.porcentaje_base) {
+            formulario.porcentaje_base.value = mecanico.porcentaje_base ?? 0;
         }
         if (formulario.activo) {
             formulario.activo.checked = Boolean(mecanico.activo);
@@ -171,7 +212,7 @@ function renderMecanicos(tablaMecanicos, mecanicos) {
     if (!mecanicos || mecanicos.length === 0) {
         tablaMecanicos.innerHTML = `
             <tr>
-                <td colspan="6" class="servicios-empty">No hay mecanicos registrados.</td>
+                <td colspan="7" class="servicios-empty">No hay tecnicos registrados.</td>
             </tr>
         `;
         return;
@@ -181,18 +222,25 @@ function renderMecanicos(tablaMecanicos, mecanicos) {
         const estadoClase = mecanico.activo ? "badge-activo" : "badge-inactivo";
         const estadoTexto = mecanico.activo ? "Activo" : "Inactivo";
         const nombre = `${mecanico.nombres} ${mecanico.apellidos}`.trim();
+        const porcentaje = mecanico.porcentaje_base ?? 0;
 
         return `
             <tr data-id="${mecanico.id}">
                 <td class="servicio-nombre">${nombre}</td>
                 <td>${mecanico.documento}</td>
                 <td>${mecanico.telefono || "-"}</td>
+                <td>${mecanico.eps || "-"}</td>
+                <td>${mecanico.tipo_sangre || "-"}</td>
+                <td>${mecanico.contacto_emergencia_nombre || "-"}</td>
+                <td>${mecanico.contacto_emergencia_parentesco || "-"}</td>
+                <td>${mecanico.contacto_emergencia_telefono || "-"}</td>
                 <td>${mecanico.especialidad || "-"}</td>
+                <td>${porcentaje}%</td>
                 <td data-role="estado">
                     <span class="badge ${estadoClase}">${estadoTexto}</span>
                 </td>
                 <td class="acciones">
-                    <a href="/mecanicos/${mecanico.id}/editar" class="btn-icon btn-edit" title="Editar mecanico">
+                    <a href="/mecanicos/${mecanico.id}/editar" class="btn-icon btn-edit" title="Editar tecnico">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </a>
                     <button type="button"
@@ -226,8 +274,8 @@ function confirmarEliminacion(boton, tablaMecanicos) {
 
     Swal.fire({
         icon: "warning",
-        title: "Eliminar mecanico",
-        html: `<p>Vas a eliminar al mecanico:</p><strong>${nombre}</strong>`,
+        title: "Eliminar tecnico",
+        html: `<p>Vas a eliminar al tecnico:</p><strong>${nombre}</strong>`,
         showCancelButton: true,
         confirmButtonText: "Si, eliminar",
         cancelButtonText: "Cancelar",
@@ -245,15 +293,15 @@ function confirmarEliminacion(boton, tablaMecanicos) {
 
             if (!response.ok) {
                 const detalle = await obtenerDetalleError(response);
-                throw new Error(detalle || "No se pudo eliminar el mecanico.");
+                throw new Error(detalle || "No se pudo eliminar el tecnico.");
             }
 
             eliminarFila(tablaMecanicos, mecanicoId);
 
             Swal.fire({
                 icon: "success",
-                title: "Mecanico eliminado",
-                text: "El mecanico fue eliminado correctamente."
+                title: "Tecnico eliminado",
+                text: "El tecnico fue eliminado correctamente."
             });
         } catch (error) {
             Swal.fire({
@@ -323,7 +371,7 @@ function eliminarFila(tablaMecanicos, mecanicoId) {
     if (tablaMecanicos.querySelectorAll("tr").length === 0) {
         tablaMecanicos.innerHTML = `
             <tr>
-                <td colspan="6" class="servicios-empty">No hay mecanicos registrados.</td>
+                <td colspan="12" class="servicios-empty">No hay tecnicos registrados.</td>
             </tr>
         `;
     }
